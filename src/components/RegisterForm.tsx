@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
     Form,
     FormControl,
@@ -27,6 +28,7 @@ import { ArrowRight, ArrowLeft } from "lucide-react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 
+import { registerUserRequest } from "@/lib/backendRequests";
 import { cn } from "@/lib/utils";
 
 import registerSchema from "@/validators/registerFormValidator";
@@ -34,6 +36,7 @@ type registerInputType = z.infer<typeof registerSchema>
 
 const RegisterForm = () => {
     const [formStep, setFormStep] = useState(0);
+    const router = useRouter();
 
     const form = useForm<registerInputType>({
         resolver: zodResolver(registerSchema),
@@ -51,16 +54,6 @@ const RegisterForm = () => {
         }
     });
 
-    interface RegisterUserData {
-        firstName: string,
-        lastName: string,
-        email: string,
-        isikukood: string,
-        birthDate: string,
-        username: string,
-        password: string
-    }
-
     const dataToRegisterUser: RegisterUserData = {
         firstName: "",
         lastName: "",
@@ -76,7 +69,6 @@ const RegisterForm = () => {
             toast.error('Please check the password and confirm password, they do not match!')
             return;
         }
-        toast.success('You have been successfully registered and are being automatically redirected to the sign-in page.');
 
         const hashedPwd = await bcrypt.hash(values.password, 10);
 
@@ -93,6 +85,13 @@ const RegisterForm = () => {
         dataToRegisterUser.password = hashedPwd;
 
         // POST REQUEST TO THE EXPRESS BACKEND
+        const response = await registerUserRequest(dataToRegisterUser);
+
+        if (response.status === 201) {
+            form.reset();
+            router.push('/sign-in');
+            toast.success('You have been successfully registered and are being automatically redirected to the sign-in page.');
+        }
     }
 
     async function proceedToNextStep() {
@@ -108,7 +107,7 @@ const RegisterForm = () => {
         }
         setFormStep(1);
     }
-
+    
     return (
         <div>
             <Card>
