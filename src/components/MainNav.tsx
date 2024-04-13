@@ -17,11 +17,13 @@ import {
 import { Button } from "./ui/button";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useRouter } from "next/navigation";
 
 import Link from "next/link";
 
 const MainNav = () => {
     const { setTheme } = useTheme();
+    const router = useRouter();
 
     return (
         <div className="flex justify-center shadow shadow-gray-300">
@@ -66,11 +68,15 @@ const MainNav = () => {
                         </div>
 
                         <div className="flex flex-col items-center space-y-3 md:space-y-0 md:space-x-2 md:flex-row md:order-3 ">
-                            <Button className="text-md font-bold md:p-5 md:text-lg">
+                            <Button
+                                className="text-md font-bold md:p-5 md:text-lg"
+                                onClick={() => router.push('/sign-in')}>
                                 Sign In
                             </Button>
 
-                            <Button className="text-md font-bold md:p-5 md:text-lg">
+                            <Button 
+                            className="text-md font-bold md:p-5 md:text-lg"
+                            onClick={() => router.push('/register')}>
                                 Register
                             </Button>
 
