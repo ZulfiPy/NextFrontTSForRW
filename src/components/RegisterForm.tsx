@@ -23,8 +23,9 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { useToast } from "@/components/ui/use-toast";
 import { ArrowRight, ArrowLeft } from "lucide-react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 import { cn } from "@/lib/utils";
 
@@ -33,7 +34,6 @@ type registerInputType = z.infer<typeof registerSchema>
 
 const RegisterForm = () => {
     const [formStep, setFormStep] = useState(0);
-    const { toast } = useToast();
 
     const form = useForm<registerInputType>({
         resolver: zodResolver(registerSchema),
@@ -72,27 +72,40 @@ const RegisterForm = () => {
     };
 
     async function handleRegisterForm(values: registerInputType) {
-        console.log(values);
+        if (values?.password != values?.confirmPassword) {
+            toast.error('Please check the password and confirm password, they do not match!')
+            return;
+        }
+        toast.success('You have been successfully registered and are being automatically redirected to the sign-in page.');
+
+        const hashedPwd = await bcrypt.hash(values.password, 10);
+
+        const formattedDay = values.day.toString().length < 2 ? `0${values.day}` : values.day;
+        const formattedMonth = values.month.toString().length < 2 ? `0${values.month}` : values.month;
+        const formattedBirthDate = `${formattedDay}.${formattedMonth}.${values.year}`;
+
+        dataToRegisterUser.firstName = values.firstName;
+        dataToRegisterUser.lastName = values.lastName;
+        dataToRegisterUser.email = values.email;
+        dataToRegisterUser.isikukood = values.isikukood;
+        dataToRegisterUser.birthDate = formattedBirthDate;
+        dataToRegisterUser.username = values.username;
+        dataToRegisterUser.password = hashedPwd;
+
+        // POST REQUEST TO THE EXPRESS BACKEND
     }
 
     async function proceedToNextStep() {
-        await form.trigger(['firstName', 'lastName', 'email', 'isikukood', 'day', 'month', 'year']);
+        const fieldNames: Array<'firstName' | 'lastName' | 'email' | 'isikukood' | 'day' | 'month' | 'year'> = ['firstName', 'lastName', 'email', 'isikukood', 'day', 'month', 'year']
+        await form.trigger(fieldNames);
 
-        const firstNameState = form.getFieldState('firstName');
-        const lastNameState = form.getFieldState('lastName');
-        const emailState = form.getFieldState('email');
-        const isikukoodState = form.getFieldState('isikukood');
-        const dayState = form.getFieldState('day');
-        const monthState = form.getFieldState('month');
-        const yearState = form.getFieldState('year');
-
-        if (!firstNameState.isDirty || firstNameState.invalid) return;
-        if (!lastNameState.isDirty || lastNameState.invalid) return;
-        if (!emailState.isDirty || emailState.invalid) return;
-        if (!isikukoodState.isDirty || isikukoodState.invalid) return;
-        if (!dayState.isDirty || dayState.invalid) return;
-        if (!monthState.isDirty || monthState.invalid) return;
-        if (!yearState.isDirty || yearState.invalid) return;
+        for (let field of fieldNames) {
+            const fieldState = form.getFieldState(field);
+            if (!fieldState.isDirty || fieldState.invalid) {
+                toast.error(`${fieldState.error?.message}`);
+                return;
+            }
+        }
         setFormStep(1);
     }
 
@@ -107,7 +120,8 @@ const RegisterForm = () => {
                     <Form {...form}>
                         <form
                             className="flex flex-col"
-                            onSubmit={form.handleSubmit(handleRegisterForm)}>
+                            onSubmit={form.handleSubmit(handleRegisterForm)}
+                        >
                             <div className={cn("space-y-5", { hidden: formStep === 1 })}>
                                 {/* First name */}
                                 <FormField
@@ -334,7 +348,6 @@ const RegisterForm = () => {
                                 <Button
                                     type="button"
                                     className={cn("font-bold", { hidden: formStep === 1 })}
-                                    variant={"ghost"}
                                     onClick={proceedToNextStep}
                                 >
                                     Next Step
@@ -349,6 +362,7 @@ const RegisterForm = () => {
                                 >
                                     <ArrowLeft className="w-4 h-4 ml-2" /> Go Back
                                 </Button>
+                                <ToastContainer />
                             </div>
                         </form>
                     </Form>
