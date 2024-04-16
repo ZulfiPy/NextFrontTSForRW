@@ -10,6 +10,22 @@ async function registerUserRequest(userData: RegisterUserData) {
     return response;
 };
 
+async function signInUserRequest(userDataForSignIn: { username: String, password: String }) {
+    const response = await fetch(`http://localhost:3500/auth`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: "include",
+        body: JSON.stringify(userDataForSignIn)
+    });
+
+    const data = await response.json();
+
+    return data;
+}
+
 export {
-    registerUserRequest
+    registerUserRequest,
+    signInUserRequest,
 }
