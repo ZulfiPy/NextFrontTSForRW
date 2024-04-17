@@ -10,7 +10,12 @@ async function registerUserRequest(userData: RegisterUserData) {
     return response;
 };
 
-async function signInUserRequest(userDataForSignIn: { username: String, password: String }) {
+interface SignInResponse {
+    data: { jwt?: string, error?: unknown },
+    status: number,
+}
+
+async function signInUserRequest(userDataForSignIn: { username: string, password: string }): Promise<SignInResponse> {
     try {
         const response = await fetch(`http://localhost:3500/auth`, {
             method: 'POST',
@@ -25,7 +30,7 @@ async function signInUserRequest(userDataForSignIn: { username: String, password
 
         return { data, status: response.status };
     } catch (error) {
-        return { data: error, status: 403 };
+        return { data: { error }, status: 403 };
     }
 }
 
