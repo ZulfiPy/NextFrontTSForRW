@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ArrowRight, ArrowLeft } from "lucide-react";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 
 import { registerUserRequest } from "@/lib/backendRequests";
@@ -88,9 +88,9 @@ const RegisterForm = () => {
         const response = await registerUserRequest(dataToRegisterUser);
 
         if (response.status === 201) {
+            toast.success('You have been successfully registered!');
             form.reset();
             router.push('/sign-in');
-            toast.success('You have been successfully registered and are being automatically redirected to the sign-in page.');
         }
     }
 
@@ -107,7 +107,7 @@ const RegisterForm = () => {
         }
         setFormStep(1);
     }
-    
+
     return (
         <div>
             <Card>
@@ -361,7 +361,6 @@ const RegisterForm = () => {
                                 >
                                     <ArrowLeft className="w-4 h-4 ml-2" /> Go Back
                                 </Button>
-                                <ToastContainer />
                             </div>
                         </form>
                     </Form>
