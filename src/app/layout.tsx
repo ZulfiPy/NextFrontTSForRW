@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import MainNav from "@/components/MainNav";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "@/context/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -24,10 +26,13 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange>
-          <MainNav />
-          <main>
-            {children}
-          </main>
+          <AuthProvider>
+            <MainNav />
+            <main>
+              {children}
+            </main>
+            <ToastContainer />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
