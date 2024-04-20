@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthProvider";
 import Link from "next/link";
+import { jwtDecode } from "jwt-decode";
 import {
     Form,
     FormControl,
@@ -32,6 +33,13 @@ import { signInUserRequest } from "@/lib/backendRequests";
 import { loginSchema } from "@/validators/loginFormValidator";
 type loginInputType = z.infer<typeof loginSchema>
 
+interface DecodedPayload {
+    UserInfo: {
+        username: string,
+        roles: number[]
+    }
+}
+
 const SignInForm = () => {
     const form = useForm<loginInputType>({
         resolver: zodResolver(loginSchema),
@@ -47,7 +55,13 @@ const SignInForm = () => {
         const signInResponse = await signInUserRequest(values);
 
         if (signInResponse.status === 200 && signInResponse?.data?.jwt) {
-            setAuth({ username: values.username, accessToken: signInResponse.data.jwt });
+            const accessToken = signInResponse.data.jwt;
+            const decoded: DecodedPayload = jwtDecode(accessToken);
+            setAuth({
+                username: decoded.UserInfo.username,
+                roles: decoded.UserInfo.roles,
+                accessToken: accessToken
+            });
             toast.success('You have been successfully logged in!')
             form.reset();
             router.push('/');
