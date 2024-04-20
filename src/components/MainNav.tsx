@@ -20,13 +20,26 @@ import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthProvider";
+import { signOutUserRequest } from "@/lib/backendRequests";
 
 import Link from "next/link";
 
 const MainNav = () => {
-    const { auth } = useContext(AuthContext);
+    const { auth, setAuth } = useContext(AuthContext);
     const { setTheme } = useTheme();
     const router = useRouter();
+
+    async function handleSignOut() {
+        const signOutResponse = await signOutUserRequest();
+
+        if (signOutResponse.status === 200) {
+            setAuth({
+                username: '',
+                roles: [],
+                accessToken: ''
+            })
+        }
+    }
 
     return (
         <div className="flex justify-center shadow shadow-gray-300">
@@ -97,7 +110,8 @@ const MainNav = () => {
                                     </DropdownMenu>
 
                                     <Button
-                                        className="text-md font-bold md:p-5 md:text-lg">
+                                        className="text-md font-bold md:p-5 md:text-lg"
+                                        onClick={handleSignOut}>
                                         Sign Out
                                     </Button>
                                 </>
