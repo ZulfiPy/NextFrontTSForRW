@@ -1,4 +1,4 @@
-async function registerUserRequest(userData: RegisterUserData) {
+async function registerUserRequest(userData: RegisterUserData): Promise<Response> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/register`, {
         method: 'POST',
         headers: {
@@ -17,7 +17,7 @@ interface SignInResponse {
 
 async function signInUserRequest(userDataForSignIn: { username: string, password: string }): Promise<SignInResponse> {
     try {
-        const response = await fetch(`http://localhost:3500/auth`, {
+        const response = await fetch("http://localhost:3500/auth", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -34,7 +34,23 @@ async function signInUserRequest(userDataForSignIn: { username: string, password
     }
 }
 
+async function signOutUserRequest(): Promise<{ data: string | unknown, status: number }> {
+    try {
+        const response = await fetch('http://localhost:3500/signOut', {
+            method: 'GET',
+            credentials: "include"
+        });
+
+        const data = await response.json();
+
+        return { data, status: response.status };
+    } catch (error) {
+        return { data: { error }, status: 403 };
+    }
+}
+
 export {
     registerUserRequest,
     signInUserRequest,
+    signOutUserRequest,
 }
