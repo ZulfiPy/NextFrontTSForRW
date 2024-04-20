@@ -15,13 +15,16 @@ import {
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Button } from "./ui/button";
-import { Moon, Sun } from "lucide-react";
+import { Moon, Sun, Settings, CircleUserRound, GitGraph } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthProvider";
 
 import Link from "next/link";
 
 const MainNav = () => {
+    const { auth } = useContext(AuthContext);
     const { setTheme } = useTheme();
     const router = useRouter();
 
@@ -68,17 +71,51 @@ const MainNav = () => {
                         </div>
 
                         <div className="flex flex-col items-center space-y-3 md:space-y-0 md:space-x-2 md:flex-row md:order-3 ">
-                            <Button
-                                className="text-md font-bold md:p-5 md:text-lg"
-                                onClick={() => router.push('/sign-in')}>
-                                Sign In
-                            </Button>
+                            {auth?.accessToken ? (
+                                <>
+                                    <DropdownMenu>
+                                        <DropdownMenuTrigger asChild>
+                                            <Button
+                                                className="text-md font-bold md:p-5 md:text-lg">
+                                                {auth.username}
+                                            </Button>
+                                        </DropdownMenuTrigger>
+                                        <DropdownMenuContent align="start">
+                                            <DropdownMenuLabel>Your links</DropdownMenuLabel>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem>
+                                                <CircleUserRound className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all  mr-1" /> Your profile
+                                            </DropdownMenuItem>
+                                            <DropdownMenuItem>
+                                                <GitGraph className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all  mr-1" /> Your last commits
+                                            </DropdownMenuItem>
+                                            <DropdownMenuSeparator />
+                                            <DropdownMenuItem>
+                                                <Settings className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all mr-1" /> Settings
+                                            </DropdownMenuItem>
+                                        </DropdownMenuContent>
+                                    </DropdownMenu>
 
-                            <Button 
-                            className="text-md font-bold md:p-5 md:text-lg"
-                            onClick={() => router.push('/register')}>
-                                Register
-                            </Button>
+                                    <Button
+                                        className="text-md font-bold md:p-5 md:text-lg">
+                                        Sign Out
+                                    </Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Button
+                                        className="text-md font-bold md:p-5 md:text-lg"
+                                        onClick={() => router.push('/sign-in')}>
+                                        Sign In
+                                    </Button>
+
+                                    <Button
+                                        className="text-md font-bold md:p-5 md:text-lg"
+                                        onClick={() => router.push('/register')}>
+                                        Register
+                                    </Button>
+                                </>
+                            )}
 
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
@@ -104,9 +141,9 @@ const MainNav = () => {
                             </DropdownMenu>
                         </div>
                     </div>
-                </NavigationMenuList>
-            </NavigationMenu>
-        </div>
+                </NavigationMenuList >
+            </NavigationMenu >
+        </div >
     )
 }
 
