@@ -15,8 +15,8 @@ declare global {
         description: string,
         priority: string,
         status: string,
-        createdAt: string,
-        createdBy: string
+        createdat: string,
+        createdby: string
     }
 }
 
