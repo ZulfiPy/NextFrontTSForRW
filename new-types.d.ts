@@ -8,6 +8,17 @@ declare global {
         username: string,
         password: string
     }
+
+    interface Task {
+        id: number,
+        title: string,
+        description: string,
+        priority: string,
+        status: string,
+        createdAt: string,
+        createdBy: string
+    }
 }
 
-export default global;
+
+export { };
