@@ -13,12 +13,14 @@ interface CardComponentProps {
 }
 
 const CardComponent = ({ cardTitle, cardDescription }: CardComponentProps) => {
+    const URIPart = cardTitle.slice(2).toLocaleLowerCase();
+    
     return (
         <Card className="w-80">
             <CardHeader>
                 <CardTitle>{cardTitle}</CardTitle>
                 <CardDescription>{cardDescription}</CardDescription>
-                <Link href={`${cardTitle}`} className="hover:undeline">Access the {cardTitle} component</Link>
+                <Link href={`/components/${URIPart}`} className="hover:undeline">Access the {cardTitle} component</Link>
             </CardHeader>
         </Card>
     )
