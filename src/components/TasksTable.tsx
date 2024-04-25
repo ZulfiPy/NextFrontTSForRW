@@ -10,7 +10,8 @@ import {
 } from "./ui/table";
 import { Button } from "./ui/button";
 import { Eye, SquarePen, X } from "lucide-react"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { AuthContext } from "@/context/AuthProvider";
 import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
 
@@ -18,12 +19,11 @@ const TasksTable = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const router = useRouter();
+    const { auth } = useContext(AuthContext);
     const BACKEND_API_DOMAIN = process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN
 
     useEffect(() => {
-
         async function getTasks() {
-
             if (loading) {
                 try {
                     // ok for one time request, but this request has to be handled with
@@ -31,14 +31,17 @@ const TasksTable = () => {
                     const response = await fetch(`${BACKEND_API_DOMAIN}/tasks`, {
                         method: "GET",
                         headers: {
-                            "authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJVc2VySW5mbyI6eyJ1c2VybmFtZSI6Ilp1bGZ1Z2FyQSIsInJvbGVzIjpbMjAwMSw1MTUwXX0sImlhdCI6MTcxNDAyMzE3NywiZXhwIjoxNzE0MDI2Nzc3fQ.UlxWjPMfpca4FNkTXY6GGEFvGW0701sx0Vkhh2S0XIQ"
+                            "authorization": `Bearer ${auth.accessToken}`
                         },
                         credentials: "include"
                     });
 
-                    const responseData = await response.json();
-                    console.log(responseData)
-                    return responseData
+                    if (response.status === 404) return setLoading(false);
+
+                    if (response.ok && response.status === 200) {
+                        const responseData = await response.json();
+                        setTasks(responseData.tasks);
+                    }
                 } catch (error) {
                     console.log('error in fetch tasks useEffect', error);
                 } finally {
@@ -84,7 +87,7 @@ const TasksTable = () => {
                                         <TableCell>{task.priority}</TableCell>
                                         <TableCell>{task.status}</TableCell>
                                         <TableCell>
-                                            {`${task.createdAt.split('T')[0]} ${task.createdAt.split('T')[1].slice(0, 8)}`}
+                                            {`${task.createdat.split('T')[0]} ${task.createdat.split('T')[1].slice(0, 8)}`}
                                         </TableCell>
                                         <TableCell>
                                             <Button
