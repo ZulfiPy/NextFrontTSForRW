@@ -21,8 +21,12 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthProvider";
 
 import taskSchema from "@/validators/taskFormValidator";
+import { toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 type taskInputType = z.infer<typeof taskSchema>
 
@@ -37,9 +41,29 @@ const NewTaskForm = () => {
             status: ""
         },
     });
+    const { auth } = useContext(AuthContext);
+    const BACKEND_API_DOMAIN = process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN
 
     async function handleSubmittedForm(values: taskInputType) {
-        console.log(values);
+        try {
+            const response = await fetch(`${BACKEND_API_DOMAIN}/tasks`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'authorization': `Bearer ${auth.accessToken}`
+                },
+                "credentials": "include",
+                body: JSON.stringify(values)
+            });
+
+            if (response.ok && response.status === 200) {
+                toast.success('New task successfully added', { autoClose: 1500 });
+                form.reset();
+                router.push('/components/tasks');
+            }
+        } catch (error) {
+            console.log('error happened while adding new task to the table', error);
+        }
     }
 
     return (
@@ -98,9 +122,10 @@ const NewTaskForm = () => {
                                         <SelectItem value="Low">Low</SelectItem>
                                         <SelectItem value="Middle">Middle</SelectItem>
                                         <SelectItem value="High">High</SelectItem>
+                                        <SelectItem value="URGENT">URGENT</SelectItem>
                                     </SelectContent>
                                     <FormDescription>
-                                        Select: Low/Middle/High
+                                        Select: Low/Middle/High/URGENT
                                     </FormDescription>
                                     <FormMessage />
                                 </Select>
