@@ -62,7 +62,7 @@ const SignInForm = () => {
                 roles: decoded.UserInfo.roles,
                 accessToken: accessToken
             });
-            toast.success('You have been successfully logged in!')
+            toast.success('You have been successfully logged in!', { autoClose: 1500 });
             form.reset();
             router.push('/');
         } else if (signInResponse.status === 403) {

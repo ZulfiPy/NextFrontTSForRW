@@ -7,7 +7,7 @@ const TasksPage = () => {
     const router = useRouter();
 
     return (
-        <section className="container flex flex-col items-center justify-center min-h-screen space-y-11">
+        <section className="container flex flex-col items-center justify-center h-screen space-y-11">
             <h1 className="text-3xl font-bold mt-10">Tasks Table</h1>
             <TasksTable />
             <Button
