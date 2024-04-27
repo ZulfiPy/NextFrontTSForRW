@@ -14,6 +14,7 @@ import { useState, useEffect, useContext } from "react";
 import { AuthContext } from "@/context/AuthProvider";
 import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 const TasksTable = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -54,7 +55,7 @@ const TasksTable = () => {
     }, []);
 
     return (
-        <div className="text-left border-2 rounded-lg p-4">
+        <div className={cn("text-left border-2 rounded-lg p-4", { "h-1/3 overflow-y-auto": tasks.length >= 1 })}>
             {loading ?
                 <Spinner loading={loading} /> :
                 tasks.length === 0 ?
@@ -92,6 +93,7 @@ const TasksTable = () => {
                                         <TableCell>
                                             <Button
                                                 type="button"
+                                                onClick={() => router.push(`/components/tasks/${task.id}/view`)}
                                             >
                                                 <Eye className="mr-1" />View
                                             </Button>
