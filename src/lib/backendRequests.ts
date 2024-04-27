@@ -17,12 +17,12 @@ interface SignInResponse {
 
 async function signInUserRequest(userDataForSignIn: { username: string, password: string }): Promise<SignInResponse> {
     try {
-        const response = await fetch("http://localhost:3500/auth", {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/auth`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: "include",
+            credentials: 'include',
             body: JSON.stringify(userDataForSignIn)
         });
 
@@ -36,9 +36,9 @@ async function signInUserRequest(userDataForSignIn: { username: string, password
 
 async function signOutUserRequest(): Promise<{ data: string | unknown, status: number }> {
     try {
-        const response = await fetch('http://localhost:3500/signOut', {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/signOut`, {
             method: 'GET',
-            credentials: "include"
+            credentials: 'include'
         });
 
         const data = await response.json();
@@ -49,8 +49,27 @@ async function signOutUserRequest(): Promise<{ data: string | unknown, status: n
     }
 }
 
+async function getOneTask(id: string, username: string, accessToken: string): Promise<{ data?: Task, error?: any, status: number }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks/${username}/${id}`, {
+            method: 'GET',
+            headers: {
+                'authorization': `Bearer ${accessToken}`
+            },
+            credentials: 'include'
+        });
+
+        const data = await response.json();
+
+        return { data, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
 export {
     registerUserRequest,
     signInUserRequest,
     signOutUserRequest,
+    getOneTask
 }
