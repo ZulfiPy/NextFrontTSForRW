@@ -101,6 +101,7 @@ const TasksTable = () => {
                                         <TableCell>
                                             <Button
                                                 type="button"
+                                                onClick={() => router.push(`/components/tasks/${task.id}/view`)}
                                             >
                                                 <SquarePen className="mr-1" />Edit
                                             </Button>

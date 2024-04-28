@@ -50,7 +50,7 @@ const ViewTaskCard: React.FC<ViewTaskCardProps> = ({ task, id }) => {
                     <Button
                         type="button"
                         className="font-bold"
-                        onClick={() => router.push(`/tasks/${id}/edit`)}
+                        onClick={() => router.push(`/components/tasks/${id}/edit`)}
                     >Edit</Button>
                 </CardFooter>
             </Card>
