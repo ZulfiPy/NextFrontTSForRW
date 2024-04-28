@@ -67,9 +67,37 @@ async function getOneTask(id: string, username: string, accessToken: string): Pr
     }
 }
 
+interface taskInputType {
+    title: string;
+    description: string;
+    priority: string;
+    status: string;
+}
+
+async function updateTask(id: string, values: taskInputType, accessToken: string): Promise<{ data?: Task, error?: any, status: number }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${accessToken}`
+            },
+            credentials: 'include',
+            body: JSON.stringify({ ...values, id })
+        });
+
+        const data = await response.json();
+
+        return { data, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
 export {
     registerUserRequest,
     signInUserRequest,
     signOutUserRequest,
-    getOneTask
+    getOneTask,
+    updateTask
 }
