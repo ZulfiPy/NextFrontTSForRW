@@ -15,6 +15,10 @@ import { AuthContext } from "@/context/AuthProvider";
 import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { deleteTask } from "@/lib/backendRequests";
+
+import { toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 const TasksTable = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -54,14 +58,25 @@ const TasksTable = () => {
         getTasks();
     }, []);
 
+    async function handleTaskDeletion(id: number) {
+        const idString = id.toString();
+        const response = await deleteTask(idString, auth.accessToken);
+
+        if (response.status === 200) {
+            toast.success('Task deleted', { autoClose: 1000 });
+            const filteredTasks = tasks.filter(task => task.id !== id);
+            setTasks(filteredTasks);
+        }
+    }
+
     return (
-        <div className={cn("text-left border-2 rounded-lg p-4", { "h-1/3 overflow-y-auto": tasks.length >= 1 })}>
+        <div className={cn("text-left border-2 rounded-lg p-4", { "h-1/3 overflow-y-auto": tasks.length >= 4 })}>
             {loading ?
                 <Spinner loading={loading} /> :
                 tasks.length === 0 ?
                     (
                         <p>
-                            Table is empty. Please add a new task toastify see task rendered in the tasks table
+                            Table is empty. Please add a new task see task rendered in the tasks table
                         </p>
                     ) : (
                         <Table>
@@ -101,7 +116,7 @@ const TasksTable = () => {
                                         <TableCell>
                                             <Button
                                                 type="button"
-                                                onClick={() => router.push(`/components/tasks/${task.id}/view`)}
+                                                onClick={() => router.push(`/components/tasks/${task.id}/edit`)}
                                             >
                                                 <SquarePen className="mr-1" />Edit
                                             </Button>
@@ -109,6 +124,7 @@ const TasksTable = () => {
                                         <TableCell>
                                             <Button
                                                 type="button"
+                                                onClick={() => handleTaskDeletion(task.id)}
                                             >
                                                 <X className="mr-1" />Delete
                                             </Button>
