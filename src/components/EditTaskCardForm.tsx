@@ -1,3 +1,4 @@
+'use client';
 import {
     Card,
     CardContent,
@@ -28,23 +29,29 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import taskSchema from "@/validators/taskFormValidator";
+import { updateTask } from "@/lib/backendRequests";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthProvider";
+
+import { toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 type taskInputType = z.infer<typeof taskSchema>
 
 interface EditTaskCardFormProps {
     task?: Task | undefined,
-    id: String
+    id: string
 }
 
 const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
     const router = useRouter();
+    const { auth } = useContext(AuthContext);
 
     const form = useForm<taskInputType>({
         resolver: zodResolver(taskSchema),
@@ -57,7 +64,13 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
     });
 
     async function handleEditedForm(values: taskInputType) {
-        console.log(values);
+        const response = await updateTask(id, values, auth.accessToken);
+
+        if (response.status === 200) {
+            toast.success('Task successfully updated', { autoClose: 1500 });
+            form.reset();
+            router.push('/components/tasks');
+        }
     }
 
     return (
@@ -125,6 +138,7 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
                                                 <SelectItem value="Low">Low</SelectItem>
                                                 <SelectItem value="Middle">Middle</SelectItem>
                                                 <SelectItem value="High">High</SelectItem>
+                                                <SelectItem value="URGENT">URGENT</SelectItem>
                                             </SelectContent>
                                             <FormDescription>
                                                 Select: Low/Middle/High
