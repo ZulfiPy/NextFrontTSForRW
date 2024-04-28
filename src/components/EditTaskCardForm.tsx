@@ -35,7 +35,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 
 import taskSchema from "@/validators/taskFormValidator";
-import { updateTask } from "@/lib/backendRequests";
+import { updateTask, deleteTask } from "@/lib/backendRequests";
 import { useContext } from "react";
 import { AuthContext } from "@/context/AuthProvider";
 
@@ -62,6 +62,18 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
             status: task?.status,
         }
     });
+
+    async function handleTaskDeletion(id: string) {
+        const response = await deleteTask(id, auth.accessToken);
+
+        if (response.status === 200) {
+            toast.success('Task successfully deleted', { autoClose: 1500 });
+            router.push('/components/tasks');
+            return;
+        }
+
+        toast.error('Error occured while task deletion. Try again later or refresh the page', { autoClose: 1500 });
+    }
 
     async function handleEditedForm(values: taskInputType) {
         const response = await updateTask(id, values, auth.accessToken);
@@ -174,6 +186,7 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
                                 type="button"
                                 className="font-bold"
                                 variant="outline"
+                                onClick={() => handleTaskDeletion(id)}
                             >Delete</Button>
                             <Button
                                 type="submit"
