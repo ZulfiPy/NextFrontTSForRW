@@ -94,10 +94,31 @@ async function updateTask(id: string, values: taskInputType, accessToken: string
     }
 }
 
+async function deleteTask(id: string, accessToken: string): Promise<{ data?: string, error?: any, status: number }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'authorization': `Bearer ${accessToken}`
+            },
+            credentials: 'include',
+            body: JSON.stringify({ id })
+        });
+
+        const data = await response.json();
+
+        return { data, status: response.status };
+    } catch (error) {
+        return { error, status: 500 };
+    }
+}
+
 export {
     registerUserRequest,
     signInUserRequest,
     signOutUserRequest,
     getOneTask,
-    updateTask
+    updateTask,
+    deleteTask
 }
