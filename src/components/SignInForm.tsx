@@ -4,7 +4,7 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { AuthContext } from "@/context/AuthProvider";
 import Link from "next/link";
 import { jwtDecode } from "jwt-decode";
@@ -49,7 +49,13 @@ const SignInForm = () => {
         }
     });
     const router = useRouter();
-    const { setAuth } = useContext(AuthContext);
+    const { setAuth, persist, setPersist } = useContext(AuthContext);
+
+    useEffect(() => {
+        localStorage.setItem('persist', persist.toString());
+    }, [persist]);
+
+    const togglePersist = () => setPersist(prev => !prev);
 
     async function handleLoginForm(values: loginInputType) {
         const signInResponse = await signInUserRequest(values);
@@ -125,6 +131,15 @@ const SignInForm = () => {
                                 className="self-center underline">
                                 Forgot username or password?
                             </Link>
+
+                            <div className="flex space-x-2 justify-center">
+                                <input
+                                    id="persistentLogin"
+                                    type="checkbox"
+                                    checked={persist}
+                                    onChange={togglePersist} />
+                                <label htmlFor="persistentLogin">Remember me</label>
+                            </div>
                         </form>
                     </Form>
                 </CardContent>
