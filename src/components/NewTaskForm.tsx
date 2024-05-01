@@ -49,8 +49,7 @@ const NewTaskForm = () => {
             const response = await fetch(`${BACKEND_API_DOMAIN}/tasks`, {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'authorization': `Bearer ${auth.accessToken}`
+                    'Content-Type': 'application/json'
                 },
                 "credentials": "include",
                 body: JSON.stringify(values)

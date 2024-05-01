@@ -35,9 +35,6 @@ const TasksTable = () => {
                     // axios interceptors
                     const response = await fetch(`${BACKEND_API_DOMAIN}/tasks`, {
                         method: "GET",
-                        headers: {
-                            "authorization": `Bearer ${auth.accessToken}`
-                        },
                         credentials: "include"
                     });
 
@@ -60,7 +57,7 @@ const TasksTable = () => {
 
     async function handleTaskDeletion(id: number) {
         const idString = id.toString();
-        const response = await deleteTask(idString, auth.accessToken);
+        const response = await deleteTask(idString);
 
         if (response.status === 200) {
             toast.success('Task deleted', { autoClose: 1000 });

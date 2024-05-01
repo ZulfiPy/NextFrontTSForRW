@@ -49,13 +49,10 @@ async function signOutUserRequest(): Promise<{ data: string | unknown, status: n
     }
 }
 
-async function getOneTask(id: string, username: string, accessToken: string): Promise<{ data?: Task, error?: any, status: number }> {
+async function getOneTask(id: string, username: string): Promise<{ data?: Task, error?: any, status: number }> {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks/${username}/${id}`, {
             method: 'GET',
-            headers: {
-                'authorization': `Bearer ${accessToken}`
-            },
             credentials: 'include'
         });
 
@@ -74,13 +71,12 @@ interface taskInputType {
     status: string;
 }
 
-async function updateTask(id: string, values: taskInputType, accessToken: string): Promise<{ data?: Task, error?: any, status: number }> {
+async function updateTask(id: string, values: taskInputType): Promise<{ data?: Task, error?: any, status: number }> {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks`, {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json',
-                'authorization': `Bearer ${accessToken}`
+                'Content-Type': 'application/json'
             },
             credentials: 'include',
             body: JSON.stringify({ ...values, id })
@@ -94,13 +90,12 @@ async function updateTask(id: string, values: taskInputType, accessToken: string
     }
 }
 
-async function deleteTask(id: string, accessToken: string): Promise<{ data?: string, error?: any, status: number }> {
+async function deleteTask(id: string): Promise<{ data?: string, error?: any, status: number }> {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json',
-                'authorization': `Bearer ${accessToken}`
+                'Content-Type': 'application/json'
             },
             credentials: 'include',
             body: JSON.stringify({ id })

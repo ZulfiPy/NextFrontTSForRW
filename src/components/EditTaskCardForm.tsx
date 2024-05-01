@@ -64,7 +64,7 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
     });
 
     async function handleTaskDeletion(id: string) {
-        const response = await deleteTask(id, auth.accessToken);
+        const response = await deleteTask(id);
 
         if (response.status === 200) {
             toast.success('Task successfully deleted', { autoClose: 1500 });
@@ -76,7 +76,7 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
     }
 
     async function handleEditedForm(values: taskInputType) {
-        const response = await updateTask(id, values, auth.accessToken);
+        const response = await updateTask(id, values);
 
         if (response.status === 200) {
             toast.success('Task successfully updated', { autoClose: 1500 });
