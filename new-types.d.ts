@@ -1,3 +1,5 @@
+import NextAuth from "next-auth";
+
 declare global {
     interface RegisterUserData {
         firstName: string,
@@ -20,5 +22,19 @@ declare global {
     }
 }
 
+
+declare module "next-auth" {
+    interface User {
+        id?: string;
+        firstName?: string,
+        lastName?: string,
+        username?: string;
+        roles?: string
+    }
+
+    interface Session {
+        user?: User
+    }
+}
 
 export { };
