@@ -3,11 +3,7 @@
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import { useContext, useEffect } from "react";
-import { AuthContext } from "@/context/AuthProvider";
 import Link from "next/link";
-import { jwtDecode } from "jwt-decode";
 import {
     Form,
     FormControl,
@@ -25,11 +21,8 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { signIn } from "next-auth/react";
 
-import { toast } from "react-toastify";
-import "react-toastify/ReactToastify.css";
-
-import { signInUserRequest } from "@/lib/backendRequests";
 import { loginSchema } from "@/validators/loginFormValidator";
 type loginInputType = z.infer<typeof loginSchema>
 
@@ -48,32 +41,9 @@ const SignInForm = () => {
             password: ""
         }
     });
-    const router = useRouter();
-    const { setAuth, persist, setPersist } = useContext(AuthContext);
-
-    useEffect(() => {
-        localStorage.setItem('persist', persist.toString());
-    }, [persist]);
-
-    const togglePersist = () => setPersist(prev => !prev);
 
     async function handleLoginForm(values: loginInputType) {
-        const signInResponse = await signInUserRequest(values);
-
-        if (signInResponse.status === 200 && signInResponse?.data?.jwt) {
-            const accessToken = signInResponse.data.jwt;
-            const decoded: DecodedPayload = jwtDecode(accessToken);
-            setAuth({
-                username: decoded.UserInfo.username,
-                roles: decoded.UserInfo.roles,
-                accessToken: accessToken
-            });
-            toast.success('You have been successfully logged in!', { autoClose: 1500 });
-            form.reset();
-            router.push('/');
-        } else if (signInResponse.status === 403) {
-            toast.error('Some error occured, please try again!')
-        }
+        signIn("credentials", { username: values.username, password: values.password });
     }
 
     return (
@@ -131,15 +101,6 @@ const SignInForm = () => {
                                 className="self-center underline">
                                 Forgot username or password?
                             </Link>
-
-                            <div className="flex space-x-2 justify-center">
-                                <input
-                                    id="persistentLogin"
-                                    type="checkbox"
-                                    checked={persist}
-                                    onChange={togglePersist} />
-                                <label htmlFor="persistentLogin">Remember me</label>
-                            </div>
                         </form>
                     </Form>
                 </CardContent>
