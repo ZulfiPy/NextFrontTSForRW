@@ -4,7 +4,7 @@ import "./globals.css";
 import MainNav from "@/components/MainNav";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ToastContainer } from "react-toastify";
-import { AuthProvider } from "@/context/AuthProvider";
+import AuthProvider from "@/components/AuthProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
