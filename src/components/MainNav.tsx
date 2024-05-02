@@ -18,28 +18,15 @@ import { Button } from "./ui/button";
 import { Moon, Sun, Settings, CircleUserRound, GitGraph, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthProvider";
-import { signOutUserRequest } from "@/lib/backendRequests";
+import { useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 import Link from "next/link";
 
 const MainNav = () => {
-    const { auth, setAuth } = useContext(AuthContext);
+    const { data: session, status } = useSession();
     const { setTheme } = useTheme();
     const router = useRouter();
-
-    async function handleSignOut() {
-        const signOutResponse = await signOutUserRequest();
-
-        if (signOutResponse.status === 200) {
-            setAuth({
-                username: '',
-                roles: [],
-                accessToken: ''
-            })
-        }
-    }
 
     return (
         <>
@@ -86,7 +73,7 @@ const MainNav = () => {
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
 
-                                {auth.accessToken ?
+                                {status === 'authenticated' && session?.user ?
                                     (
                                         <div className="flex flex-col">
                                             <DropdownMenuItem className="flex flex-col space-y-2">
@@ -94,7 +81,7 @@ const MainNav = () => {
                                                     <DropdownMenuTrigger asChild>
                                                         <Button
                                                             className="text-md font-bold md:p-5 text-md w-24">
-                                                            {auth.username}
+                                                            {session.user.username}
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="start">
@@ -113,11 +100,10 @@ const MainNav = () => {
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
 
-
                                                 <Button
-                                                    className="text-md font-bold md:p-5 text-md w-24"
-                                                    onClick={handleSignOut}>
-                                                    Sign Out
+                                                    className="ext-md font-bold md:p-5 text-md w-24"
+                                                    onClick={() => signOut()}>
+                                                    Sign out
                                                 </Button>
                                             </DropdownMenuItem>
                                         </div>
@@ -188,13 +174,13 @@ const MainNav = () => {
                             </div>
 
                             <div className="flex flex-col items-center space-y-3 md:space-y-0 md:space-x-2 md:flex-row md:order-3 ">
-                                {auth?.accessToken ? (
+                                {status === 'authenticated' && session?.user ? (
                                     <>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     className="text-md font-bold md:p-5 md:text-lg">
-                                                    {auth.username}
+                                                    {session.user.username}
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="start">
@@ -215,8 +201,8 @@ const MainNav = () => {
 
                                         <Button
                                             className="text-md font-bold md:p-5 md:text-lg"
-                                            onClick={handleSignOut}>
-                                            Sign Out
+                                            onClick={() => signOut()}>
+                                            Sign out
                                         </Button>
                                     </>
                                 ) : (
