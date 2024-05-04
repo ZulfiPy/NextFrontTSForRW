@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import { DefaultSession } from "next-auth";
 
 declare global {
     interface RegisterUserData {
@@ -33,7 +34,7 @@ declare module "next-auth" {
     }
 
     interface Session {
-        user?: User | unknown
+        user?: User & DefaultSession["user"]
     }
 }
 
