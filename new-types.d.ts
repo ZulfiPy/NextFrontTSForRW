@@ -29,11 +29,11 @@ declare module "next-auth" {
         firstName?: string,
         lastName?: string,
         username?: string;
-        roles?: string
+        roles?: string;
     }
 
     interface Session {
-        user?: User
+        user?: User | unknown
     }
 }
 
