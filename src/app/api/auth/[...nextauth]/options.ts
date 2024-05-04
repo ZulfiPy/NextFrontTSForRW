@@ -46,21 +46,38 @@ export const authOptions: NextAuthOptions = {
         async signIn({ user, account, credentials }) {
             return true;
         },
-        async jwt({ token, user }) {
+        async jwt({ token, user, session }) {
             if (user) {
-                token.roles = user.roles;
-                token.name = `${user.firstName} ${user.lastName}`;
-                token.username = user.username;
+                const expUnix = Math.floor(Date.now() / 1000) + (60 * 60 * 4);
+                token = {
+                    "user": {
+                        name: `${user.firstName} ${user.lastName}`,
+                        username: user.username,
+                        id: token.sub,
+                        roles: user.roles,
+                    },
+                    expiresAt: new Date(expUnix * 1000),
+                    exp: expUnix
+                }
             }
-            return token;
+
+            const currentDate = (new Date()).toISOString();
+            const tokenExpDate = token.expiresAt as string;
+
+            if (currentDate > tokenExpDate) {
+                console.log('old token creating new token');
+                const newIatUnix = Math.floor(Date.now() / 1000);
+                const newExpUnix = Math.floor(Date.now() / 1000) + (60 * 60 * 4);
+                token.iat = newIatUnix;
+                token.exp = newExpUnix;
+                token.expiresAt = new Date(newExpUnix * 1000);
+            }
+
+            return token
         },
         async session({ session, token }) {
-            const user = await User.findOne({ email: session.user?.email });
             if (session?.user) {
-                session.user.id = user._id.toString();
-                session.user.username = user.username;
-                session.user.name = `${user.firstName} ${user.lastName}`;
-                session.user.roles = user.roles;
+                session.user = token.user;
             }
             return session;
         },
@@ -84,7 +101,7 @@ export const authOptions: NextAuthOptions = {
         },
         decode: async ({ token, secret }) => {
             if (token) {
-                const decoded = jwt.verify(token, secret, { algorithms: ['HS256'] });
+                const decoded = jwt.decode(token);
                 return decoded as JWT;
             } else {
                 throw new Error('Token is undefined, cannot decode undefined token.');
