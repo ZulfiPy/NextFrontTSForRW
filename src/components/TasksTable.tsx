@@ -10,12 +10,12 @@ import {
 } from "./ui/table";
 import { Button } from "./ui/button";
 import { Eye, SquarePen, X } from "lucide-react"
-import { useState, useEffect, useContext } from "react";
-import { AuthContext } from "@/context/AuthProvider";
+import { useState, useEffect } from "react";
 import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { deleteTask } from "@/lib/backendRequests";
+import { useSession } from "next-auth/react";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -24,8 +24,9 @@ const TasksTable = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const router = useRouter();
-    const { auth } = useContext(AuthContext);
+    const { status } = useSession();
     const BACKEND_API_DOMAIN = process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN
+
 
     useEffect(() => {
         async function getTasks() {
@@ -38,16 +39,23 @@ const TasksTable = () => {
                         credentials: "include"
                     });
 
-                    if (response.status === 404) return setLoading(false);
+                    if (response.status === 404) {
+                        setLoading(false);
+                        return;
+                    }
+
+                    if (response.status === 401 && status === 'authenticated') {
+                        setLoading(true);
+                        return;
+                    }
 
                     if (response.ok && response.status === 200) {
                         const responseData = await response.json();
                         setTasks(responseData.tasks);
+                        setLoading(false);
                     }
                 } catch (error) {
                     console.log('error in fetch tasks useEffect', error);
-                } finally {
-                    setLoading(false);
                 }
             }
         }
