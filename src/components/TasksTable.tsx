@@ -32,8 +32,6 @@ const TasksTable = () => {
         async function getTasks() {
             if (loading) {
                 try {
-                    // ok for one time request, but this request has to be handled with
-                    // axios interceptors
                     const response = await fetch(`${BACKEND_API_DOMAIN}/tasks`, {
                         method: "GET",
                         credentials: "include"
