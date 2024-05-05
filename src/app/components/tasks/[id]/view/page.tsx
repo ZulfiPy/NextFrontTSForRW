@@ -1,31 +1,36 @@
 'use client';
-import { useState, useEffect, useContext } from "react";
-import { AuthContext } from "@/context/AuthProvider";
+import { useState, useEffect } from "react";
 import Spinner from "@/components/Spinner";
 import ViewTaskCard from "@/components/ViewTaskCard";
 import { getOneTask } from "@/lib/backendRequests";
+import { useSession } from "next-auth/react";
 
 const ViewOneTaskPage = ({ params }: { params: { id: string } }) => {
     const { id } = params;
     const [task, setTask] = useState<Task>();
     const [loading, setLoading] = useState<boolean>(true);
-    const { auth } = useContext(AuthContext);
+    const { data: session } = useSession();
 
     useEffect(() => {
 
         async function fetchOneTask() {
-            const response = await getOneTask(id, auth.username, auth.accessToken);
+            if (session?.user) {
+                const username = session.user.username as string
+                const response = await getOneTask(id, username);
 
-            if (response.status === 200) {
-                setTask(response.data)
-                setLoading(false);
+                if (response.status === 200) {
+                    setTask(response.data)
+                    setLoading(false);
+                }
+
             }
-
         }
 
         fetchOneTask();
 
     }, [id])
+
+    console.log(task)
 
     return (
         <section className="container flex flex-col items-center justify-center min-h-screen">
