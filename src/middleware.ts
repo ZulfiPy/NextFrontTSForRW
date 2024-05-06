@@ -7,7 +7,7 @@ export async function middleware(request: NextRequest) {
     const sessionToken = cookieStore.get('next-auth.session-token')?.value;
 
     if (!sessionToken) {
-        return NextResponse.redirect(new URL('/register', request.url));
+        return NextResponse.redirect(new URL('/sign-in', request.url));
     }
 }
 
