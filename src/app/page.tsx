@@ -9,9 +9,9 @@ export default async function Home() {
     <section className="container flex flex-col items-center justify-center min-h-screen">
       {session?.user ? (
         <>
-          Welcome, {session?.user.username}!
+          <p>Welcome, <span className="font-bold underline">{session?.user.username}</span>!</p>
           <Link href='components'
-            className="bg-blue-700 p-2 rounded-lg mt-2"
+            className="font-bold bg-blue-700 p-2 rounded-lg mt-2 hover:underline"
           >
             Check the Components
           </Link>
@@ -22,7 +22,7 @@ export default async function Home() {
             If you are not registered, you can
             <Link
               href='register'
-              className="bg-blue-700 p-2 rounded-lg mt-2 inline-block mx-1"
+              className="font-bold bg-blue-700 p-2 rounded-lg mt-2 inline-block mx-1 hover:underline"
             >
               Register
             </Link>.
@@ -30,7 +30,7 @@ export default async function Home() {
           <span>
             <Link
               href='sign-in'
-              className="bg-blue-700 p-2 rounded-lg mt-2 inline-block mx-1">
+              className="font-bold bg-blue-700 p-2 rounded-lg mt-2 inline-block mx-1 hover:underline">
               Sign in
             </Link>
             if you have an account .
