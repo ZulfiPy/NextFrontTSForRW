@@ -111,7 +111,6 @@ async function deleteTask(id: string): Promise<{ data?: string, error?: any, sta
 
 async function getCustomers(): Promise<{ data?: Customer[], error?: any, status: number }> {
     try {
-        console.log(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/customers`)
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/customers`, {
             method: "GET",
             credentials: "include"
