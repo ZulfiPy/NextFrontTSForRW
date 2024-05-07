@@ -15,7 +15,6 @@ import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { deleteTask } from "@/lib/backendRequests";
-import { useSession } from "next-auth/react";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -24,9 +23,7 @@ const TasksTable = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const router = useRouter();
-    const { status } = useSession();
     const BACKEND_API_DOMAIN = process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN
-
 
     useEffect(() => {
         async function getTasks() {
