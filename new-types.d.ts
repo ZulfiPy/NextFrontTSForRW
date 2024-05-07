@@ -21,6 +21,19 @@ declare global {
         createdat: string,
         createdby: string
     }
+
+    interface Customer {
+        id: number,
+        first_name: string,
+        last_name: string,
+        personal_id_number: number,
+        is_estonian_resident: boolean,
+        birth_date: string,
+        driver_license_number: string,
+        address: string,
+        phone_number: string,
+        email: string
+    }
 }
 
 
