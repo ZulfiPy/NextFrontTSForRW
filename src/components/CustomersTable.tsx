@@ -7,14 +7,24 @@ import {
     TableHead,
     TableHeader,
     TableRow
-} from "./ui/table";
+} from "@/components/ui/table";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Eye, SquarePen, X } from "lucide-react"
 import { useState, useEffect } from "react";
 import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getCustomers } from "@/lib/backendRequests";
-
 
 const CustomersTable = () => {
     const [customers, setCustomers] = useState<Customer[]>([]);
@@ -28,7 +38,7 @@ const CustomersTable = () => {
 
             if (isMounted) {
                 const { data, status, error } = await getCustomers();
-                console.log(data)
+
                 if (status === 200 && data) {
                     setCustomers(data);
                 }
@@ -50,7 +60,12 @@ const CustomersTable = () => {
         return () => {
             isMounted = false;
         }
-    }, [])
+    }, []);
+
+    async function handleCustomerDelete() {
+        // handle it
+        console.log('handle it');
+    }
 
     return (
         <div className={cn("text-left border-2 rounded-lg p-4", { "h1/3 overflow-y-auto": customers.length >= 4 })}>
@@ -88,21 +103,46 @@ const CustomersTable = () => {
                                         <TableCell>{customer.email}</TableCell>
                                         <TableCell>{customer.address}</TableCell>
                                         <TableCell>
-                                            <div className="flex">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => router.push(`customers/${customer.customer_id}/view`)}>
-                                                    <Eye className="mr-1" />
-                                                </button>
-                                                <button
-                                                    type="button"
-                                                    onClick={() => router.push(`customers/${customer.customer_id}/edit`)}>
-                                                    <SquarePen className="mr-1" />
-                                                </button>
-                                                <button
-                                                    type="button">
-                                                    <X className="mr-1" />
-                                                </button>
+                                            <div className="flex space-x-2">
+                                                <div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => router.push(`customers/${customer.customer_id}/view`)}>
+                                                        <Eye />
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => router.push(`customers/${customer.customer_id}/edit`)}>
+                                                        <SquarePen />
+                                                    </button>
+                                                </div>
+                                                <div>
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger>
+                                                            <X />
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>
+                                                                    Are you absolutely sure?
+                                                                </AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    This action cannot be undone. Thiw will permanently delete selected customer from the database.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>
+                                                                    Cancel
+                                                                </AlertDialogCancel>
+                                                                <AlertDialogAction onClick={handleCustomerDelete}>
+                                                                    Delete
+                                                                </AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                </div>
                                             </div>
                                         </TableCell>
                                     </TableRow>
