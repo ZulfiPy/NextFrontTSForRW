@@ -20,7 +20,7 @@ const CardComponent = ({ cardTitle, cardDescription }: CardComponentProps) => {
             <CardHeader>
                 <CardTitle>{cardTitle}</CardTitle>
                 <CardDescription>{cardDescription}</CardDescription>
-                <Link href={`/components/${URIPart}`} className="hover:undeline">Access the {cardTitle} component</Link>
+                <Link href={`/components/${URIPart}`} className="hover:underline">Access the {cardTitle} component</Link>
             </CardHeader>
         </Card>
     )
