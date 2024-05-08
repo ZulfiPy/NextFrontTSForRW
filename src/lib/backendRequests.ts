@@ -124,6 +124,21 @@ async function getCustomers(): Promise<{ data?: Customer[], error?: any, status:
     }
 }
 
+async function getCustomerById(id: string): Promise<{ data?: Customer, error?: any, status: number }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/customers/${id}`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        const data = await response.json();
+
+        return { data: data.customer, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
 export {
     registerUserRequest,
     signInUserRequest,
@@ -131,5 +146,6 @@ export {
     getOneTask,
     updateTask,
     deleteTask,
-    getCustomers
+    getCustomers,
+    getCustomerById,
 }
