@@ -12,6 +12,18 @@ declare global {
         password: string
     }
 
+    interface NewCustomerUserData {
+        firstName: string,
+        lastName: string,
+        isEstonianResident: boolean,
+        isikukood: string,
+        birthDate: string,
+        driversLicenseNumber: string,
+        address: string,
+        phoneNumber: string,
+        email: string
+    }
+
     interface Task {
         id: number,
         title: string,
@@ -34,6 +46,19 @@ declare global {
         phone_number: string,
         email: string
     }
+
+    interface AddCustomerDataType {
+        firstName: string,
+        lastName: string,
+        isEstonianResident: boolean,
+        isikukood: string,
+        birthDate: string,
+        driversLicenseNumber: string,
+        address: string,
+        phoneNumber: string,
+        email: string
+    }
+
 }
 
 
