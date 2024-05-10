@@ -158,6 +158,26 @@ async function createCustomer(customerData: AddCustomerDataType): Promise<{ data
     }
 }
 
+async function updateCustomer(customerData: AddCustomerDataType, id: string) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/customers/${id}`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: "include",
+            body: JSON.stringify(customerData)
+        });
+
+        const data = await response.json();
+        console.log(data)
+
+        return { data, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
 export {
     registerUserRequest,
     signInUserRequest,
@@ -167,5 +187,6 @@ export {
     deleteTask,
     getCustomers,
     getCustomerById,
-    createCustomer
+    createCustomer,
+    updateCustomer,
 }
