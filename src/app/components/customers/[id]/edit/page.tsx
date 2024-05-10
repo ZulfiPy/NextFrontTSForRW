@@ -1,10 +1,10 @@
 'use client';
 import { useState, useEffect } from "react";
 import Spinner from "@/components/Spinner";
-//
 import { getCustomerById } from "@/lib/backendRequests";
-import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import EditCustomerForm from "@/components/EditCustomerForm";
 
 
 const EditCustomerPage = ({ params }: { params: { id: string } }) => {
@@ -49,7 +49,7 @@ const EditCustomerPage = ({ params }: { params: { id: string } }) => {
                     <Spinner loading={loading} />
                 ) : (
                     customer ? (
-                        <p>Here have to be edit form</p>
+                        <EditCustomerForm customer={customer} id={id} />
                     ) : (
                         <p>Error: {error.toString()}</p>
                     )
