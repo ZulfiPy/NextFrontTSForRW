@@ -38,7 +38,7 @@ declare global {
         customer_id: number,
         first_name: string,
         last_name: string,
-        personal_id_number: number,
+        personal_id_number: string,
         is_estonian_resident: boolean,
         birth_date: string,
         driver_license_number: string,
