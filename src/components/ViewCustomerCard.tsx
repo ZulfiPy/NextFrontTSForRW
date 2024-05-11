@@ -7,8 +7,24 @@ import {
     CardFooter,
     CardTitle
 } from "@/components/ui/card";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+import { X, SquarePen } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { deleteCustomer } from "@/lib/backendRequests";
+
+import { toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 interface ViewCustomerCardProps {
     customer?: Customer,
@@ -17,6 +33,15 @@ interface ViewCustomerCardProps {
 
 const ViewCustomerCard = ({ customer, id }: ViewCustomerCardProps) => {
     const router = useRouter();
+
+    const handleTaskDeletion = async () => {
+        const response = await deleteCustomer(id);
+
+        if (response.status == 200) {
+            toast.success('Customer deleted successfully', { autoClose: 1500 });
+            router.push('/components/customers');
+        }
+    }
 
     return (
         <>
@@ -55,17 +80,43 @@ const ViewCustomerCard = ({ customer, id }: ViewCustomerCardProps) => {
                     </label>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                    <Button
-                        type="button"
-                        className="font-bold"
-                        variant="outline">
-                        Delete
-                    </Button>
+                    <div>
+                        <AlertDialog>
+                            <AlertDialogTrigger>
+                                <Button
+                                    type="button"
+                                    className="font-bold"
+                                    variant="outline"
+                                >
+                                    <span className="mr-2">Delete</span> <X />
+                                </Button>
+                                {/* <span className="inline-flex">Delete <X /></span> */}
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>
+                                        Are you absolutely sure?
+                                    </AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                        This action cannot be undone. Thiw will permanently delete selected customer from the database.
+                                    </AlertDialogDescription>
+                                </AlertDialogHeader>
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel>
+                                        Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction onClick={handleTaskDeletion}>
+                                        Delete
+                                    </AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+                    </div>
                     <Button
                         type="button"
                         className="font-bold"
                         onClick={() => router.push(`/components/customers/${id}/edit`)}>
-                        Edit
+                        <span className="mr-2">Edit</span> <SquarePen />
                     </Button>
                 </CardFooter>
             </Card>
