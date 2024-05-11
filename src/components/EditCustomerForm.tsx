@@ -43,7 +43,7 @@ const EditCustomerForm = ({ customer, id }: { customer: Customer, id: string }) 
     });
 
     const handleNewCustomerForm = async (values: customerInputType) => {
-        const birthDate = `${values.year}-${values.month}-${values.day}`;
+        const birthDate = `${values.year}-${values.month}-${values.day + 1}`;
         const updatedCustomerData = {
             firstName: values.firstName,
             lastName: values.lastName,
