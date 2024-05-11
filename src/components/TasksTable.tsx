@@ -73,66 +73,66 @@ const TasksTable = () => {
         <div className={cn("text-left border-2 rounded-lg p-4", { "h-1/3 overflow-y-auto": tasks.length >= 4 })}>
             {loading ?
                 <Spinner loading={loading} /> :
-                tasks.length === 0 ?
-                    (
+                tasks.length > 0 ?
+                    (<Table>
+                        <TableCaption>A list of tasks that need to be done at work.</TableCaption>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>ID</TableHead>
+                                <TableHead>Title</TableHead>
+                                <TableHead>Description</TableHead>
+                                <TableHead>Priority</TableHead>
+                                <TableHead>Status</TableHead>
+                                <TableHead>Created At</TableHead>
+                                <TableHead>View</TableHead>
+                                <TableHead>Edit</TableHead>
+                                <TableHead>Delete</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {tasks.map((task, index) => (
+                                <TableRow key={index}>
+                                    <TableCell>{task.id}</TableCell>
+                                    <TableCell>{task.title}</TableCell>
+                                    <TableCell>{task.description}</TableCell>
+                                    <TableCell>{task.priority}</TableCell>
+                                    <TableCell>{task.status}</TableCell>
+                                    <TableCell>
+                                        {`${task.createdat.split('T')[0]} ${task.createdat.split('T')[1].slice(0, 8)}`}
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            type="button"
+                                            onClick={() => router.push(`/components/tasks/${task.id}/view`)}
+                                        >
+                                            <Eye className="mr-1" />View
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            type="button"
+                                            onClick={() => router.push(`/components/tasks/${task.id}/edit`)}
+                                        >
+                                            <SquarePen className="mr-1" />Edit
+                                        </Button>
+                                    </TableCell>
+                                    <TableCell>
+                                        <Button
+                                            type="button"
+                                            onClick={() => handleTaskDeletion(task.id)}
+                                        >
+                                            <X className="mr-1" />Delete
+                                        </Button>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+
+                    ) : (
                         <p>
                             Table is empty. Please add a new task see task rendered in the tasks table
                         </p>
-                    ) : (
-                        <Table>
-                            <TableCaption>A list of tasks that need to be done at work.</TableCaption>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>ID</TableHead>
-                                    <TableHead>Title</TableHead>
-                                    <TableHead>Description</TableHead>
-                                    <TableHead>Priority</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead>Created At</TableHead>
-                                    <TableHead>View</TableHead>
-                                    <TableHead>Edit</TableHead>
-                                    <TableHead>Delete</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {tasks.map((task, index) => (
-                                    <TableRow key={index}>
-                                        <TableCell>{task.id}</TableCell>
-                                        <TableCell>{task.title}</TableCell>
-                                        <TableCell>{task.description}</TableCell>
-                                        <TableCell>{task.priority}</TableCell>
-                                        <TableCell>{task.status}</TableCell>
-                                        <TableCell>
-                                            {`${task.createdat.split('T')[0]} ${task.createdat.split('T')[1].slice(0, 8)}`}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Button
-                                                type="button"
-                                                onClick={() => router.push(`/components/tasks/${task.id}/view`)}
-                                            >
-                                                <Eye className="mr-1" />View
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Button
-                                                type="button"
-                                                onClick={() => router.push(`/components/tasks/${task.id}/edit`)}
-                                            >
-                                                <SquarePen className="mr-1" />Edit
-                                            </Button>
-                                        </TableCell>
-                                        <TableCell>
-                                            <Button
-                                                type="button"
-                                                onClick={() => handleTaskDeletion(task.id)}
-                                            >
-                                                <X className="mr-1" />Delete
-                                            </Button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
                     )}
         </div>
     )
