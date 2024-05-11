@@ -158,7 +158,7 @@ async function createCustomer(customerData: AddCustomerDataType): Promise<{ data
     }
 }
 
-async function updateCustomer(customerData: AddCustomerDataType, id: string) {
+async function updateCustomer(customerData: AddCustomerDataType, id: string): Promise<{ data?: string, error?: any | undefined, status: number }> {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/customers/${id}`, {
             method: "PUT",
@@ -170,7 +170,21 @@ async function updateCustomer(customerData: AddCustomerDataType, id: string) {
         });
 
         const data = await response.json();
-        console.log(data)
+
+        return { data, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
+async function deleteCustomer(id: string): Promise<{ data?: string, error?: any | undefined, status: number }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/customers/${id}`, {
+            method: "DELETE",
+            credentials: "include"
+        });
+
+        const data = await response.json();
 
         return { data, status: response.status }
     } catch (error) {
@@ -189,4 +203,5 @@ export {
     getCustomerById,
     createCustomer,
     updateCustomer,
+    deleteCustomer
 }
