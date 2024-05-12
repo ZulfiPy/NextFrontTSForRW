@@ -37,7 +37,7 @@ export type NewCustomerUserData = {
 }
 
 export type Task = {
-    id: number,
+    id: string,
     title: string,
     description: string,
     priority: string,
@@ -69,4 +69,16 @@ export type AddCustomerDataType = {
     address: string,
     phoneNumber: string,
     email: string
+}
+
+export type Vehicle = {
+    id: string,
+    vin_code: string,
+    plate_number: string,
+    brand: string,
+    model: string,
+    year: number,
+    gearbox: string,
+    colour: string,
+    fuel_type: string
 }
