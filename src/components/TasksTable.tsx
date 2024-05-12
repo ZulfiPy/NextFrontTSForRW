@@ -15,6 +15,7 @@ import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { deleteTask } from "@/lib/backendRequests";
+import { Task } from "@/lib/types";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";

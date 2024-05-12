@@ -5,6 +5,7 @@ import { getCustomerById } from "@/lib/backendRequests";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import EditCustomerForm from "@/components/EditCustomerForm";
+import { Customer } from "@/lib/types";
 
 
 const EditCustomerPage = ({ params }: { params: { id: string } }) => {

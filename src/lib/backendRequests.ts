@@ -1,3 +1,5 @@
+import { RegisterUserData, Task, Customer, AddCustomerDataType } from "./types";
+
 async function registerUserRequest(userData: RegisterUserData): Promise<Response> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/register`, {
         method: 'POST',

@@ -26,6 +26,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { getCustomers } from "@/lib/backendRequests";
 import { deleteCustomer } from "@/lib/backendRequests";
+import { Customer } from "@/lib/types";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
