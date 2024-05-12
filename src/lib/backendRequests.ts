@@ -1,4 +1,4 @@
-import { RegisterUserData, Task, Customer, AddCustomerDataType } from "./types";
+import { RegisterUserData, Task, Customer, AddCustomerDataType, Vehicle } from "./types";
 
 async function registerUserRequest(userData: RegisterUserData): Promise<Response> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/register`, {
@@ -194,6 +194,21 @@ async function deleteCustomer(id: string): Promise<{ data?: string, error?: any 
     }
 }
 
+async function getVehicles(): Promise<{ data?: Vehicle[], error?: any | undefined, status: number }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/vehicles`, {
+            method: 'GET',
+            credentials: "include"
+        });
+
+        const data = await response.json();
+
+        return { data: data.vehicles, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
 export {
     registerUserRequest,
     signInUserRequest,
@@ -205,5 +220,6 @@ export {
     getCustomerById,
     createCustomer,
     updateCustomer,
-    deleteCustomer
+    deleteCustomer,
+    getVehicles,
 }
