@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { createCustomer } from "@/lib/backendRequests";
+import { AddCustomerDataType } from "@/lib/types";
 
 import customerSchema from "@/validators/customerFormValidator";
 type customerInputType = z.infer<typeof customerSchema>

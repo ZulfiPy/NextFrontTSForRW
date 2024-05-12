@@ -22,6 +22,7 @@ import { X, SquarePen } from "lucide-react"
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { deleteCustomer } from "@/lib/backendRequests";
+import { Customer } from "@/lib/types";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -90,7 +91,6 @@ const ViewCustomerCard = ({ customer, id }: ViewCustomerCardProps) => {
                                 >
                                     <span className="mr-2">Delete</span> <X />
                                 </Button>
-                                {/* <span className="inline-flex">Delete <X /></span> */}
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>

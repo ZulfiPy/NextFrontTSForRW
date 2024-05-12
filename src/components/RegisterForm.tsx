@@ -27,6 +27,7 @@ import { Input } from "@/components/ui/input";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { RegisterUserData } from "@/lib/types";
 
 import { registerUserRequest } from "@/lib/backendRequests";
 import { cn } from "@/lib/utils";
