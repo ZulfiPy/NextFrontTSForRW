@@ -5,6 +5,7 @@ import ViewCustomerCard from "@/components/ViewCustomerCard";
 import { getCustomerById } from "@/lib/backendRequests";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Customer } from "@/lib/types";
 
 const ViewCustomerPage = ({ params }: { params: { id: string } }) => {
     const { id } = params;
