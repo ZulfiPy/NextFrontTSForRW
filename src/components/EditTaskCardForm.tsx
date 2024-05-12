@@ -36,22 +36,19 @@ import { useForm } from "react-hook-form";
 
 import taskSchema from "@/validators/taskFormValidator";
 import { updateTask, deleteTask } from "@/lib/backendRequests";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthProvider";
+import { Task } from "@/lib/types";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 
 type taskInputType = z.infer<typeof taskSchema>
 
-interface EditTaskCardFormProps {
-    task?: Task | undefined,
-    id: string
+type EditTaskCardFormProps = {
+    task: Task
 }
 
-const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
+const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task }) => {
     const router = useRouter();
-    const { auth } = useContext(AuthContext);
 
     const form = useForm<taskInputType>({
         resolver: zodResolver(taskSchema),
@@ -76,7 +73,7 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
     }
 
     async function handleEditedForm(values: taskInputType) {
-        const response = await updateTask(id, values);
+        const response = await updateTask(task.id, values);
 
         if (response.status === 200) {
             toast.success('Task successfully updated', { autoClose: 1500 });
@@ -186,7 +183,7 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
                                 type="button"
                                 className="font-bold"
                                 variant="outline"
-                                onClick={() => handleTaskDeletion(id)}
+                                onClick={() => handleTaskDeletion(task.id)}
                             >Delete</Button>
                             <Button
                                 type="submit"
@@ -196,7 +193,6 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task, id }) => {
                     </Card>
                 </form>
             </Form>
-            <Button type="button" className="mt-6 font-bold" onClick={() => router.back()}>Go back</Button>
         </>
     )
 }
