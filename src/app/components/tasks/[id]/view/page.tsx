@@ -4,12 +4,16 @@ import Spinner from "@/components/Spinner";
 import ViewTaskCard from "@/components/ViewTaskCard";
 import { getOneTask } from "@/lib/backendRequests";
 import { useSession } from "next-auth/react";
+import { Task } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const ViewOneTaskPage = ({ params }: { params: { id: string } }) => {
     const { id } = params;
     const [task, setTask] = useState<Task>();
     const [loading, setLoading] = useState<boolean>(true);
     const { data: session } = useSession();
+    const router = useRouter();
 
     useEffect(() => {
 
@@ -38,8 +42,14 @@ const ViewOneTaskPage = ({ params }: { params: { id: string } }) => {
                 (
                     <Spinner loading={loading} />
                 ) : (
-                    <ViewTaskCard task={task} id={id} />
+                    task && <ViewTaskCard task={task} />
                 )}
+            <Button
+                type="button"
+                className="mt-6 font-bold"
+                onClick={() => router.back()}>
+                Go back
+            </Button>
         </section>
     )
 }
