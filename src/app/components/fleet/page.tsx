@@ -12,7 +12,7 @@ const FleetPage = () => {
             <VehiclesTable />
             <Button
                 className="py-8 shadow-2xl font-bold text-md"
-                onClick={() => router.push('customers/new-customer')}>
+                onClick={() => router.push('fleet/new-vehicle')}>
                 Add a New Vehicle
             </Button>
         </section>
