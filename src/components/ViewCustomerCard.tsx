@@ -83,14 +83,8 @@ const ViewCustomerCard = ({ customer, id }: ViewCustomerCardProps) => {
                 <CardFooter className="flex justify-between">
                     <div>
                         <AlertDialog>
-                            <AlertDialogTrigger>
-                                <Button
-                                    type="button"
-                                    className="font-bold"
-                                    variant="outline"
-                                >
-                                    <span className="mr-2">Delete</span> <X />
-                                </Button>
+                            <AlertDialogTrigger className="flex">
+                                <span className="mr-2">Delete</span> <X />
                             </AlertDialogTrigger>
                             <AlertDialogContent>
                                 <AlertDialogHeader>
