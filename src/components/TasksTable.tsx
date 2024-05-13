@@ -59,9 +59,8 @@ const TasksTable = () => {
         getTasks();
     }, []);
 
-    async function handleTaskDeletion(id: number) {
-        const idString = id.toString();
-        const response = await deleteTask(idString);
+    async function handleTaskDeletion(id: string) {
+        const response = await deleteTask(id);
 
         if (response.status === 200) {
             toast.success('Task deleted', { autoClose: 1000 });
