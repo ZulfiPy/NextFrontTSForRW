@@ -1,4 +1,4 @@
-import { RegisterUserData, Task, Customer, AddCustomerDataType, Vehicle } from "./types";
+import { RegisterUserData, Task, Customer, AddCustomerDataType, Vehicle, AddVehicleDataType } from "./types";
 
 async function registerUserRequest(userData: RegisterUserData): Promise<Response> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/register`, {
@@ -209,12 +209,31 @@ async function getVehicles(): Promise<{ data?: Vehicle[], error?: any | undefine
     }
 }
 
-async function getVehicleById(id: string): Promise<{ data?: Vehicle, error?: any, status: number}> {
+async function getVehicleById(id: string): Promise<{ data?: Vehicle, error?: any, status: number }> {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/vehicles/${id}`, {
             method: "GET",
             credentials: "include"
         });
+
+        const data = await response.json();
+
+        return { data: data.vehicle, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
+async function createVehicle(vehicleData: AddVehicleDataType): Promise<{ data?: Vehicle | number, error?: any | undefined, status: number }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/vehicles`, {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: "include",
+            body: JSON.stringify(vehicleData)
+        })
 
         const data = await response.json();
 
@@ -238,4 +257,5 @@ export {
     deleteCustomer,
     getVehicles,
     getVehicleById,
+    createVehicle
 }
