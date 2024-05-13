@@ -197,13 +197,28 @@ async function deleteCustomer(id: string): Promise<{ data?: string, error?: any 
 async function getVehicles(): Promise<{ data?: Vehicle[], error?: any | undefined, status: number }> {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/vehicles`, {
-            method: 'GET',
+            method: "GET",
             credentials: "include"
         });
 
         const data = await response.json();
 
         return { data: data.vehicles, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
+async function getVehicleById(id: string): Promise<{ data?: Vehicle, error?: any, status: number}> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/vehicles/${id}`, {
+            method: "GET",
+            credentials: "include"
+        });
+
+        const data = await response.json();
+
+        return { data: data.vehicle, status: response.status }
     } catch (error) {
         return { error, status: 500 }
     }
@@ -222,4 +237,5 @@ export {
     updateCustomer,
     deleteCustomer,
     getVehicles,
+    getVehicleById,
 }
