@@ -22,7 +22,7 @@ const ViewOneTaskPage = ({ params }: { params: { id: string } }) => {
                 const username = session.user.username as string
                 const response = await getOneTask(id, username);
 
-                if (response.status === 200) {
+                if (response.status === 200 && response.data) {
                     setTask(response.data)
                     setLoading(false);
                 }
@@ -32,9 +32,7 @@ const ViewOneTaskPage = ({ params }: { params: { id: string } }) => {
 
         fetchOneTask();
 
-    }, [id])
-
-    console.log(task)
+    }, [id, session])
 
     return (
         <section className="container flex flex-col items-center justify-center min-h-screen">
