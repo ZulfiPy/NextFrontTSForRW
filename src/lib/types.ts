@@ -82,3 +82,14 @@ export type Vehicle = {
     colour: string,
     fuel_type: string
 }
+
+export type AddVehicleDataType = {
+    vin_code: string,
+    plate_number: string,
+    brand: string,
+    model: string,
+    year: number,
+    gearbox: string,
+    colour: string,
+    fuel_type: string
+}
