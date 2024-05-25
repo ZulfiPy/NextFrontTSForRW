@@ -23,6 +23,11 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Vehicle } from "@/lib/types";
 
+import { deleteVehicle } from "@/lib/backendRequests";
+
+import { toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
+
 type ViewVehicleCardProps = {
     vehicle: Vehicle
 }
@@ -31,7 +36,16 @@ const ViewVehicleCard: React.FC<ViewVehicleCardProps> = ({ vehicle }) => {
     const router = useRouter();
 
     async function handleVehicleDeletion(id: string) {
-        console.log('handle deletion of task');
+        const response = await deleteVehicle(id);
+
+        if (response.data && response.status === 200) {
+            toast.success('Vehicle deleted', { autoClose: 1500 });
+            router.push('/components/fleet');
+        }
+
+        if (!response.data) {
+            toast.error('Some error occured while deleting task', { autoClose: 1500 });
+        }
     }
 
     return (
