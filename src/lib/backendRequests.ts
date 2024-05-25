@@ -243,6 +243,21 @@ async function createVehicle(vehicleData: AddVehicleDataType): Promise<{ data?: 
     }
 }
 
+async function deleteVehicle(id: string) {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/vehicles/${id}`, {
+            method: "DELETE",
+            credentials: "include"
+        });
+
+        const data = await response.json();
+
+        return { data: data.message, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
 export {
     registerUserRequest,
     signInUserRequest,
@@ -257,5 +272,6 @@ export {
     deleteCustomer,
     getVehicles,
     getVehicleById,
-    createVehicle
+    createVehicle,
+    deleteVehicle,
 }
