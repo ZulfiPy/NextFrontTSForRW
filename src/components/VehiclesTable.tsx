@@ -25,7 +25,10 @@ import Spinner from "./Spinner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Vehicle } from "@/lib/types";
-import { getVehicles } from "@/lib/backendRequests";
+import { getVehicles, deleteVehicle } from "@/lib/backendRequests";
+
+import { toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
 
 const VehiclesTable = () => {
     const [vehicles, setVehicles] = useState<Vehicle[]>([]);
@@ -58,6 +61,20 @@ const VehiclesTable = () => {
             isMounted = false;
         }
     }, [])
+
+    async function handleVehicleDeletion(id: string) {
+        const response = await deleteVehicle(id);
+
+        if (response.data && response.status === 200) {
+            toast.success('Task deleted', { autoClose: 1500 });
+            const filteredVehicles = vehicles.filter(vehicle => vehicle.id !== id);
+            setVehicles(filteredVehicles);
+        }
+
+        if (!response.data) {
+            toast.error('Error occured while deleting task', { autoClose: 2500 });
+        }
+    }
 
     return (
         <div className={cn('text-left border-2 rounded-lg p-4', { "h-1/3 overflow-y-auto": vehicles.length >= 4 })}>
@@ -128,7 +145,7 @@ const VehiclesTable = () => {
                                                                 <AlertDialogCancel>
                                                                     Cancel
                                                                 </AlertDialogCancel>
-                                                                <AlertDialogAction>
+                                                                <AlertDialogAction onClick={() => handleVehicleDeletion(vehicle.id)}>
                                                                     Delete
                                                                 </AlertDialogAction>
                                                             </AlertDialogFooter>
