@@ -56,16 +56,16 @@ const NewVehicleForm = () => {
             fuel_type: values.fuelType
         }
 
-        const { data, error, status } = await createVehicle(dataToAddVehicle);
+        const { data, status } = await createVehicle(dataToAddVehicle);
 
         if (status === 200 && data) {
             toast.success('New vehicle successfully added', { autoClose: 1500 });
             form.reset();
             router.push('/components/fleet')
         }
-
-        if (status === 500 && error) {
-            toast.error('Something went wrong, try again later', { autoClose: 5000 });
+    
+        if (status === 500) {
+            toast.error('Something went wrong, try again later', { autoClose: 2500 });
         }
     }
 
