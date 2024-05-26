@@ -1,4 +1,4 @@
-import { RegisterUserData, Task, Customer, AddCustomerDataType, Vehicle, AddVehicleDataType } from "./types";
+import { RegisterUserData, Task, Customer, AddCustomerDataType, Vehicle, AddVehicleDataType, VehicleResponseData } from "./types";
 
 async function registerUserRequest(userData: RegisterUserData): Promise<Response> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/register`, {
@@ -243,7 +243,7 @@ async function createVehicle(vehicleData: AddVehicleDataType): Promise<{ data?: 
     }
 }
 
-async function deleteVehicle(id: string) {
+async function deleteVehicle(id: string): Promise<{ data?: Vehicle | number, error?: any, status: number }> {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/vehicles/${id}`, {
             method: "DELETE",
@@ -253,6 +253,25 @@ async function deleteVehicle(id: string) {
         const data = await response.json();
 
         return { data: data.message, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
+}
+
+async function updateVehicle(vehicleData: AddVehicleDataType, id: string): Promise<{ data?: VehicleResponseData, error?: any, status: number }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/vehicles/${id}`, {
+            method: "PUT",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: "include",
+            body: JSON.stringify(vehicleData)
+        });
+
+        const data = await response.json();
+
+        return { data, status: response.status }
     } catch (error) {
         return { error, status: 500 }
     }
@@ -274,4 +293,5 @@ export {
     getVehicleById,
     createVehicle,
     deleteVehicle,
+    updateVehicle,
 }
