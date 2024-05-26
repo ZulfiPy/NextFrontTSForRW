@@ -93,3 +93,8 @@ export type AddVehicleDataType = {
     colour: string,
     fuel_type: string
 }
+
+export type VehicleResponseData = {
+    detail?: string,
+    vehicle?: Vehicle | number
+}
