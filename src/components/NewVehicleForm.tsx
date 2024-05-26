@@ -46,8 +46,8 @@ const NewVehicleForm = () => {
 
     async function handleSubmittedForm(values: vehicleInputType) {
         const dataToAddVehicle = {
-            plate_number: values.plateNumber,
-            vin_code: values.vinCode,
+            plate_number: values.plateNumber.toUpperCase(),
+            vin_code: values.vinCode.toUpperCase(),
             brand: values.brand,
             model: values.model,
             year: parseInt(values.year),
@@ -61,7 +61,7 @@ const NewVehicleForm = () => {
         if (status === 200 && data) {
             toast.success('New vehicle successfully added', { autoClose: 1500 });
             form.reset();
-            router.push('/components/fleet')
+            router.push('/components/fleet');
         }
     
         if (status === 500) {
@@ -165,7 +165,7 @@ const NewVehicleForm = () => {
                         name="gearbox"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Year:</FormLabel>
+                                <FormLabel>Gearbox:</FormLabel>
                                 <Select onValueChange={field.onChange} value={field.value}>
                                     <FormControl>
                                         <SelectTrigger>
