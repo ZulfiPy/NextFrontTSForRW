@@ -1,4 +1,4 @@
-import { RegisterUserData, Task, Customer, AddCustomerDataType, Vehicle, AddVehicleDataType, VehicleResponseData } from "./types";
+import { RegisterUserData, Task, Customer, AddCustomerDataType, Vehicle, AddVehicleDataType, VehicleResponseData, TaskRequestBodyType } from "./types";
 
 async function registerUserRequest(userData: RegisterUserData): Promise<Response> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/register`, {
@@ -71,6 +71,25 @@ interface taskInputType {
     description: string;
     priority: string;
     status: string;
+}
+
+async function createTask(values: TaskRequestBodyType): Promise<{ data?: number, error?: any, status: number }> {
+    try {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            'credentials': 'include',
+            body: JSON.stringify(values)
+        });
+
+        const data = await response.json();
+
+        return { data, status: response.status }
+    } catch (error) {
+        return { error, status: 500 }
+    }
 }
 
 async function updateTask(id: string, values: taskInputType): Promise<{ data?: Task, error?: any, status: number }> {
@@ -282,6 +301,7 @@ export {
     signInUserRequest,
     signOutUserRequest,
     getOneTask,
+    createTask,
     updateTask,
     deleteTask,
     getCustomers,
