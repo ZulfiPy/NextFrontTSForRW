@@ -33,10 +33,11 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
+import { useSession } from "next-auth/react";
 
 import taskSchema from "@/validators/taskFormValidator";
 import { updateTask, deleteTask } from "@/lib/backendRequests";
-import { Task } from "@/lib/types";
+import { Task, TaskRequestBodyType } from "@/lib/types";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -48,6 +49,7 @@ type EditTaskCardFormProps = {
 }
 
 const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task }) => {
+    const { data: session } = useSession();
     const router = useRouter();
 
     const form = useForm<taskInputType>({
@@ -73,7 +75,15 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task }) => {
     }
 
     async function handleEditedForm(values: taskInputType) {
-        const response = await updateTask(task.id, values);
+
+        const dataToUpdateTask: TaskRequestBodyType = {
+            title: values.title,
+            description: values.description,
+            priority: values.priority,
+            status: values.status,
+            created_by: session?.user.username as string
+        }
+        const response = await updateTask(task.id, dataToUpdateTask);
 
         if (response.status === 200) {
             toast.success('Task successfully updated', { autoClose: 1500 });
@@ -95,7 +105,7 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task }) => {
                             <CardTitle>Edit Task Data</CardTitle>
                             <CardDescription>Edit task in the provided form down below</CardDescription>
                         </CardHeader>
-                        <CardContent className="">
+                        <CardContent>
 
                             <FormField
                                 control={form.control}

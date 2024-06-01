@@ -92,7 +92,7 @@ async function createTask(values: TaskRequestBodyType): Promise<{ data?: number,
     }
 }
 
-async function updateTask(id: string, values: taskInputType): Promise<{ data?: Task, error?: any, status: number }> {
+async function updateTask(id: string, values: TaskRequestBodyType): Promise<{ data?: Task, error?: any, status: number }> {
     try {
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks`, {
             method: 'PUT',
