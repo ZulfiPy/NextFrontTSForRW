@@ -42,8 +42,16 @@ export type Task = {
     description: string,
     priority: string,
     status: string,
-    createdat: string,
-    createdby: string
+    created_at: string,
+    created_by: string
+}
+
+export type TaskRequestBodyType = {
+    title: string,
+    description: string,
+    priority: string,
+    status: string,
+    created_by: string
 }
 
 export type Customer = {
