@@ -23,10 +23,10 @@ import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Task } from "@/lib/types";
 import { deleteTask } from "@/lib/backendRequests";
+import { convertTimestampWithUTC } from "@/lib/customUtils";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
-
 
 type ViewTaskCardProps = {
     task: Task
@@ -68,7 +68,7 @@ const ViewTaskCard: React.FC<ViewTaskCardProps> = ({ task }) => {
                         <span className="font-bold underline">Status:</span> {task.status}
                     </label>
                     <label>
-                        <span className="font-bold underline">Created at:</span> {`${task.createdat.split('T')[0]} ${task.createdat.split('T')[1].slice(0, 8)}`}
+                        <span className="font-bold underline">Created at:</span> {convertTimestampWithUTC(task.created_at)}
                     </label>
                 </CardContent>
                 <CardFooter className="flex justify-between">
