@@ -17,11 +17,24 @@ import { cn } from "@/lib/utils";
 import { deleteTask } from "@/lib/backendRequests";
 import { Task } from "@/lib/types";
 import { convertTimestampWithUTC } from "@/lib/customUtils";
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import { useSession } from "next-auth/react";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 
 const TasksTable = () => {
+    const { data: session } = useSession();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const router = useRouter();
@@ -61,7 +74,8 @@ const TasksTable = () => {
     }, []);
 
     async function handleTaskDeletion(id: string) {
-        const response = await deleteTask(id);
+        const username = session?.user.username as string;
+        const response = await deleteTask(id, username);
 
         if (response.status === 200) {
             toast.success('Task deleted', { autoClose: 1000 });
@@ -85,9 +99,7 @@ const TasksTable = () => {
                                 <TableHead>Priority</TableHead>
                                 <TableHead>Status</TableHead>
                                 <TableHead>Created At</TableHead>
-                                <TableHead>View</TableHead>
-                                <TableHead>Edit</TableHead>
-                                <TableHead>Delete</TableHead>
+                                <TableHead>RUD</TableHead>
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -102,28 +114,50 @@ const TasksTable = () => {
                                         {convertTimestampWithUTC(task.created_at)}
                                     </TableCell>
                                     <TableCell>
-                                        <Button
-                                            type="button"
-                                            onClick={() => router.push(`/components/tasks/${task.id}/view`)}
-                                        >
-                                            <Eye className="mr-1" />View
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button
-                                            type="button"
-                                            onClick={() => router.push(`/components/tasks/${task.id}/edit`)}
-                                        >
-                                            <SquarePen className="mr-1" />Edit
-                                        </Button>
-                                    </TableCell>
-                                    <TableCell>
-                                        <Button
-                                            type="button"
-                                            onClick={() => handleTaskDeletion(task.id)}
-                                        >
-                                            <X className="mr-1" />Delete
-                                        </Button>
+                                        <div className="flex space-x-2">
+                                            <div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => router.push(`/components/tasks/${task.id}/view`)}>
+                                                    <Eye />
+                                                </button>
+                                            </div>
+
+                                            <div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => router.push(`/components/tasks/${task.id}/edit`)}>
+                                                    <SquarePen />
+                                                </button>
+                                            </div>
+
+                                            <div>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger>
+                                                        <X />
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>
+                                                                Are you absolutely sure?
+                                                            </AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                This action cannot be undone. This will permanently delete selected task from the database.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>
+                                                                Cancel
+                                                            </AlertDialogCancel>
+                                                            <AlertDialogAction
+                                                                onClick={() => handleTaskDeletion(task.id)}>
+                                                                Delete
+                                                            </AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            </div>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}

@@ -111,15 +111,11 @@ async function updateTask(id: string, values: TaskRequestBodyType): Promise<{ da
     }
 }
 
-async function deleteTask(id: string): Promise<{ data?: string, error?: any, status: number }> {
+async function deleteTask(id: string, username: string): Promise<{ data?: string, error?: any, status: number }> {
     try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN}/tasks/${username}/${id}`, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({ id })
+            credentials: 'include'
         });
 
         const data = await response.json();
