@@ -1,14 +1,5 @@
 'use client';
 import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardFooter,
-    CardTitle
-} from "@/components/ui/card";
-
-import {
     Form,
     FormControl,
     FormDescription,
@@ -17,7 +8,6 @@ import {
     FormLabel,
     FormMessage
 } from "@/components/ui/form";
-
 import {
     Select,
     SelectContent,
@@ -36,7 +26,7 @@ import { useForm } from "react-hook-form";
 import { useSession } from "next-auth/react";
 
 import taskSchema from "@/validators/taskFormValidator";
-import { updateTask, deleteTask } from "@/lib/backendRequests";
+import { updateTask } from "@/lib/backendRequests";
 import { Task, TaskRequestBodyType } from "@/lib/types";
 
 import { toast } from "react-toastify";
@@ -62,18 +52,6 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task }) => {
         }
     });
 
-    async function handleTaskDeletion(id: string) {
-        const response = await deleteTask(id);
-
-        if (response.status === 200) {
-            toast.success('Task successfully deleted', { autoClose: 1500 });
-            router.push('/components/tasks');
-            return;
-        }
-
-        toast.error('Error occured while task deletion. Try again later or refresh the page', { autoClose: 1500 });
-    }
-
     async function handleEditedForm(values: taskInputType) {
 
         const dataToUpdateTask: TaskRequestBodyType = {
@@ -93,117 +71,97 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task }) => {
     }
 
     return (
-        <>
+        <div>
             <Form {...form}>
                 <form
-                    className="flex flex-col space-y-3"
+                    className="flex flex-col space-y-4 border-2 rounded-lg p-8"
                     onSubmit={form.handleSubmit(handleEditedForm)}
                 >
+                    <FormField
+                        control={form.control}
+                        name="title"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Title:</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Enter a task title" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    Update title by editing title field
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Edit Task Data</CardTitle>
-                            <CardDescription>Edit task in the provided form down below</CardDescription>
-                        </CardHeader>
-                        <CardContent>
+                    <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Description</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Enter a description" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    Update description by editing description field
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-                            <FormField
-                                control={form.control}
-                                name="title"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Title:</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter a task title" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Update title by editing title field
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                    <FormField
+                        control={form.control}
+                        name="priority"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Priority</FormLabel>
+                                <Select onValueChange={field.onChange} defaultValue={task?.priority}>
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select task priority" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        <SelectItem value="Low">Low</SelectItem>
+                                        <SelectItem value="Middle">Middle</SelectItem>
+                                        <SelectItem value="High">High</SelectItem>
+                                        <SelectItem value="URGENT">URGENT</SelectItem>
+                                    </SelectContent>
+                                    <FormDescription>
+                                        Select: Low/Middle/High
+                                    </FormDescription>
+                                    <FormMessage />
+                                </Select>
+                            </FormItem>
+                        )}
+                    />
 
-                            <FormField
-                                control={form.control}
-                                name="description"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Description</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter a description" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Update description by editing description field
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
+                    <FormField
+                        control={form.control}
+                        name="status"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Status:</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Enter task status" {...field} />
+                                </FormControl>
+                                <FormDescription>
+                                    Ex.: Started/Close to Finish/Finished
+                                </FormDescription>
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
 
-                            <FormField
-                                control={form.control}
-                                name="priority"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Priority</FormLabel>
-                                        <Select onValueChange={field.onChange} defaultValue={task?.priority}>
-                                            <FormControl>
-                                                <SelectTrigger>
-                                                    <SelectValue placeholder="Select task priority" />
-                                                </SelectTrigger>
-                                            </FormControl>
-                                            <SelectContent>
-                                                <SelectItem value="Low">Low</SelectItem>
-                                                <SelectItem value="Middle">Middle</SelectItem>
-                                                <SelectItem value="High">High</SelectItem>
-                                                <SelectItem value="URGENT">URGENT</SelectItem>
-                                            </SelectContent>
-                                            <FormDescription>
-                                                Select: Low/Middle/High
-                                            </FormDescription>
-                                            <FormMessage />
-                                        </Select>
-                                    </FormItem>
-                                )}
-                            />
-
-                            <FormField
-                                control={form.control}
-                                name="status"
-                                render={({ field }) => (
-                                    <FormItem>
-                                        <FormLabel>Status:</FormLabel>
-                                        <FormControl>
-                                            <Input placeholder="Enter task status" {...field} />
-                                        </FormControl>
-                                        <FormDescription>
-                                            Ex.: Started/Close to Finish/Finished
-                                        </FormDescription>
-                                        <FormMessage />
-                                    </FormItem>
-                                )}
-                            />
-
-
-
-                        </CardContent>
-                        <CardFooter className="flex justify-between">
-                            <Button
-                                type="button"
-                                className="font-bold"
-                                variant="outline"
-                                onClick={() => handleTaskDeletion(task.id)}
-                            >Delete</Button>
-                            <Button
-                                type="submit"
-                                className="font-bold"
-                            >Save</Button>
-                        </CardFooter>
-                    </Card>
+                    <Button
+                        type="submit"
+                        className="font-bold"
+                    >Save</Button>
                 </form>
             </Form>
-        </>
+        </div>
     )
 }
 
