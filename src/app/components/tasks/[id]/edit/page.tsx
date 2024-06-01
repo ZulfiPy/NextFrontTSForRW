@@ -34,7 +34,8 @@ const EditTaskPage = ({ params }: { params: { id: string } }) => {
     }, [id])
 
     return (
-        <section className="container flex flex-col items-center justify-center min-h-screen">
+        <section className="container flex flex-col items-center justify-center min-h-screen space-y-11">
+            <h1 className="text-3xl font-bold mt-10">Edit Task Form</h1>
             {loading ?
                 (
                     <Spinner loading={loading} />
