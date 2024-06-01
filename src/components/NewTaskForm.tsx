@@ -21,8 +21,9 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useContext } from "react";
-import { AuthContext } from "@/context/AuthProvider";
+import { useSession } from "next-auth/react";
+import { createTask } from "@/lib/backendRequests";
+import { TaskRequestBodyType } from "@/lib/types";
 
 import taskSchema from "@/validators/taskFormValidator";
 import { toast } from "react-toastify";
@@ -31,6 +32,7 @@ import "react-toastify/ReactToastify.css";
 type taskInputType = z.infer<typeof taskSchema>
 
 const NewTaskForm = () => {
+    const { data: session } = useSession();
     const router = useRouter();
     const form = useForm<taskInputType>({
         resolver: zodResolver(taskSchema),
@@ -41,27 +43,26 @@ const NewTaskForm = () => {
             status: ""
         },
     });
-    const { auth } = useContext(AuthContext);
-    const BACKEND_API_DOMAIN = process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN
 
     async function handleSubmittedForm(values: taskInputType) {
-        try {
-            const response = await fetch(`${BACKEND_API_DOMAIN}/tasks`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                "credentials": "include",
-                body: JSON.stringify(values)
-            });
+        const dataToCreateTask: TaskRequestBodyType = {
+            title: values.title,
+            description: values.description,
+            priority: values.priority,
+            status: values.status,
+            created_by: session?.user.username as string
+        }
 
-            if (response.ok && response.status === 200) {
-                toast.success('New task successfully added', { autoClose: 1500 });
-                form.reset();
-                router.push('/components/tasks');
-            }
-        } catch (error) {
-            console.log('error happened while adding new task to the table', error);
+        const createTaskResponse = await createTask(dataToCreateTask)
+
+        if (createTaskResponse.status === 200) {
+            toast.success('New task successfully added', { autoClose: 1500 });
+            form.reset();
+            router.push('/components/tasks');
+        }
+
+        if (createTaskResponse.status === 500) {
+            toast.error('Something went wrong, try again later or refresh the page', { autoClose: 1500 });
         }
     }
 
