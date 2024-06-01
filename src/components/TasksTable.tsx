@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { deleteTask } from "@/lib/backendRequests";
 import { Task } from "@/lib/types";
+import { convertTimestampWithUTC } from "@/lib/customUtils";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -98,7 +99,7 @@ const TasksTable = () => {
                                     <TableCell>{task.priority}</TableCell>
                                     <TableCell>{task.status}</TableCell>
                                     <TableCell>
-                                        {`${task.createdat.split('T')[0]} ${task.createdat.split('T')[1].slice(0, 8)}`}
+                                        {convertTimestampWithUTC(task.created_at)}
                                     </TableCell>
                                     <TableCell>
                                         <Button
