@@ -68,7 +68,7 @@ const ViewCustomerCard = ({ customer, id }: ViewCustomerCardProps) => {
                         <span className="font-bold underline">Birth date:</span> {customer?.birth_date.split('T')[0]}
                     </label>
                     <label>
-                        <span className="font-bold underline">Drivers License number:</span> {customer?.driver_license_number}
+                        <span className="font-bold underline">Drivers License number:</span> {customer?.drivers_license_number}
                     </label>
                     <label>
                         <span className="font-bold underline">Phone number:</span> {customer?.phone_number}
