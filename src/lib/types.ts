@@ -55,27 +55,27 @@ export type TaskRequestBodyType = {
 }
 
 export type Customer = {
-    customer_id: number,
+    id: number,
     first_name: string,
     last_name: string,
     personal_id_number: string,
     is_estonian_resident: boolean,
     birth_date: string,
-    driver_license_number: string,
+    drivers_license_number: string,
     address: string,
     phone_number: string,
     email: string
 }
 
 export type AddCustomerDataType = {
-    firstName: string,
-    lastName: string,
-    isEstonianResident: boolean,
-    isikukood: string,
-    birthDate: string,
-    driversLicenseNumber: string,
+    first_name: string,
+    last_name: string,
+    is_estonian_resident: boolean,
+    personal_id_number: string,
+    birth_date: string,
+    drivers_license_number: string,
     address: string,
-    phoneNumber: string,
+    phone_number: string,
     email: string
 }
 
