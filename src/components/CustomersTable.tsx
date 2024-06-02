@@ -71,7 +71,7 @@ const CustomersTable = () => {
         const response = await deleteCustomer(ID);
 
         if (response.status === 200) {
-            const updatedCustomers = customers.filter(customer => customer.customer_id !== id);
+            const updatedCustomers = customers.filter(customer => customer.id !== id);
             setCustomers(updatedCustomers);
             toast.success('Customer deleted successfully', { autoClose: 1500 });
         }
@@ -113,7 +113,7 @@ const CustomersTable = () => {
                                                 <TableCell>{customer.personal_id_number}</TableCell>
                                                 <TableCell>{customer.is_estonian_resident ? "Yes" : "No"}</TableCell>
                                                 <TableCell>{customer.birth_date.split('T')[0]}</TableCell>
-                                                <TableCell>{customer.driver_license_number}</TableCell>
+                                                <TableCell>{customer.drivers_license_number}</TableCell>
                                                 <TableCell>{customer.phone_number}</TableCell>
                                                 <TableCell>{customer.email}</TableCell>
                                                 <TableCell>{customer.address}</TableCell>
@@ -122,14 +122,14 @@ const CustomersTable = () => {
                                                         <div>
                                                             <button
                                                                 type="button"
-                                                                onClick={() => router.push(`customers/${customer.customer_id}/view`)}>
+                                                                onClick={() => router.push(`customers/${customer.id}/view`)}>
                                                                 <Eye />
                                                             </button>
                                                         </div>
                                                         <div>
                                                             <button
                                                                 type="button"
-                                                                onClick={() => router.push(`customers/${customer.customer_id}/edit`)}>
+                                                                onClick={() => router.push(`customers/${customer.id}/edit`)}>
                                                                 <SquarePen />
                                                             </button>
                                                         </div>
@@ -151,7 +151,7 @@ const CustomersTable = () => {
                                                                         <AlertDialogCancel>
                                                                             Cancel
                                                                         </AlertDialogCancel>
-                                                                        <AlertDialogAction onClick={() => handleCustomerDelete(customer.customer_id)}>
+                                                                        <AlertDialogAction onClick={() => handleCustomerDelete(customer.id)}>
                                                                             Delete
                                                                         </AlertDialogAction>
                                                                     </AlertDialogFooter>
