@@ -36,7 +36,7 @@ const EditCustomerForm = ({ customer, id }: { customer: Customer, id: string }) 
             day: birthDate.getDate(),
             month: birthDate.getMonth() + 1,
             year: birthDate.getFullYear(),
-            driversLicenseNumber: customer.driver_license_number,
+            driversLicenseNumber: customer.drivers_license_number,
             address: customer.address,
             phoneNumber: customer.phone_number,
             email: customer.email
@@ -46,14 +46,14 @@ const EditCustomerForm = ({ customer, id }: { customer: Customer, id: string }) 
     const handleNewCustomerForm = async (values: customerInputType) => {
         const birthDate = `${values.year}-${values.month}-${values.day + 1}`;
         const updatedCustomerData = {
-            firstName: values.firstName,
-            lastName: values.lastName,
-            isEstonianResident: values.isEstonianResident,
-            isikukood: values.isikukood,
-            birthDate,
-            driversLicenseNumber: values.driversLicenseNumber,
+            first_name: values.firstName,
+            last_name: values.lastName,
+            is_estonian_resident: values.isEstonianResident,
+            personal_id_number: values.isikukood,
+            birth_date: birthDate,
+            drivers_license_number: values.driversLicenseNumber,
             address: values.address,
-            phoneNumber: values.phoneNumber,
+            phone_number: values.phoneNumber,
             email: values.email
         }
 
