@@ -96,6 +96,7 @@ const VehiclesTable = () => {
                                     <TableHead>Year</TableHead>
                                     <TableHead>Gearbox</TableHead>
                                     <TableHead>Fuel type</TableHead>
+                                    <TableHead>Colour</TableHead>
                                     <TableHead>RUD</TableHead>
                                 </TableRow>
                             </TableHeader>
@@ -109,6 +110,7 @@ const VehiclesTable = () => {
                                         <TableCell>{vehicle.year}</TableCell>
                                         <TableCell>{vehicle.gearbox}</TableCell>
                                         <TableCell>{vehicle.fuel_type}</TableCell>
+                                        <TableCell>{vehicle.colour}</TableCell>
                                         <TableCell>
                                             <div className="flex space-x-2">
                                                 <div>
