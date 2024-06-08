@@ -8,7 +8,6 @@ import {
     TableHeader,
     TableRow
 } from "./ui/table";
-import { Button } from "./ui/button";
 import { Eye, SquarePen, X } from "lucide-react"
 import { useState, useEffect } from "react";
 import Spinner from "./Spinner";
@@ -71,7 +70,7 @@ const TasksTable = () => {
         }
 
         getTasks();
-    }, []);
+    }, [BACKEND_API_DOMAIN, loading]);
 
     async function handleTaskDeletion(id: string) {
         const username = session?.user.username as string;
