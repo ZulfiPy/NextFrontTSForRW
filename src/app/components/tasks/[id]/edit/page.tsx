@@ -31,7 +31,7 @@ const EditTaskPage = ({ params }: { params: { id: string } }) => {
 
         fetchOneTask();
 
-    }, [id])
+    }, [id, session?.user])
 
     return (
         <section className="container flex flex-col items-center justify-center min-h-screen space-y-11">
