@@ -38,7 +38,7 @@ const ViewVehiclePage = ({ params }: { params: { id: string } }) => {
         return () => {
             isMounted = false;
         }
-    }, [])
+    }, [id])
 
     return (
         <section className="container flex flex-col items-center justify-center min-h-screen">
