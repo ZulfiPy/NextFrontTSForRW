@@ -31,7 +31,7 @@ export default async function Home() {
             <Link
               href='sign-in'
               className="font-bold bg-blue-700 p-2 rounded-lg mt-2 inline-block mx-1 hover:underline">
-              Sign in
+              Sign In
             </Link>
             if you have an account .
           </span>
