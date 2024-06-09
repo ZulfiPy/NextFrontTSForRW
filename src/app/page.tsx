@@ -25,7 +25,7 @@ export default async function Home() {
               className="font-bold bg-blue-700 p-2 rounded-lg mt-2 inline-block mx-1 hover:underline"
             >
               Register
-            </Link>.
+            </Link>!
           </span>
           <span>
             <Link
