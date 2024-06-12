@@ -3,6 +3,7 @@ import { RegisterUserData, Task, Customer, AddCustomerDataType, Vehicle, AddVehi
 async function registerUserRequest(userData: RegisterUserData): Promise<Response> {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/register`, {
         method: 'POST',
+        credentials: "include",
         headers: {
             'Content-Type': 'application/json'
         },
