@@ -7,7 +7,8 @@ import User from "@/models/User";
 import bcrypt from "bcryptjs"
 
 export const authOptions: NextAuthOptions = {
-    providers: [CredentialsProvider({
+    providers: [
+        CredentialsProvider({
         credentials: {
             username: {
                 label: 'Username',
@@ -105,15 +106,4 @@ export const authOptions: NextAuthOptions = {
             }
         }
     },
-    cookies: {
-        sessionToken: {
-          name: 'next-auth.session-token',
-          options: {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'lax',
-            path: '/'
-          }
-        }
-      },
 }
