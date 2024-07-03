@@ -9,37 +9,37 @@ import bcrypt from "bcryptjs"
 export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
-        credentials: {
-            username: {
-                label: 'Username',
-                type: 'text',
-                placeholder: "Enter a username"
+            credentials: {
+                username: {
+                    label: 'Username',
+                    type: 'text',
+                    placeholder: "Enter a username"
+                },
+                password: {
+                    label: 'Password',
+                    type: 'password',
+                    placeholder: 'Enter your COOL password'
+                }
             },
-            password: {
-                label: 'Password',
-                type: 'password',
-                placeholder: 'Enter your COOL password'
+            async authorize(credentials, req) {
+                if (!credentials) return null;
+                const { username, password } = credentials;
+                try {
+                    await connectDB();
+                    const user = await User.findOne({ username });
+
+                    if (!user) return null;
+
+                    const comparedPwd = await bcrypt.compare(password, user.password);
+                    if (!comparedPwd) return null;
+
+                    return user;
+                } catch (error) {
+                    console.log('error occurred while logging in', error);
+                    return null;
+                }
             }
-        },
-        async authorize(credentials, req) {
-            if (!credentials) return null;
-            const { username, password } = credentials;
-            try {
-                await connectDB();
-                const user = await User.findOne({ username });
-
-                if (!user) return null;
-
-                const comparedPwd = await bcrypt.compare(password, user.password);
-                if (!comparedPwd) return null;
-
-                return user;
-            } catch (error) {
-                console.log('error occurred while logging in', error);
-                return null;
-            }
-        }
-    })
+        })
     ],
     callbacks: {
         async signIn({ user, account, credentials }) {
@@ -108,13 +108,30 @@ export const authOptions: NextAuthOptions = {
     },
     cookies: {
         sessionToken: {
-            name: 'next-auth.session-token',
+            name: `next-auth.session-token`,
             options: {
                 httpOnly: true,
-                sameSite: 'strict',
+                sameSite: 'lax',
                 path: '/',
-                secure: process.env.NODE_ENV === 'production'
+                secure: true
             }
-        }
+        },
+        callbackUrl: {
+            name: `next-auth.callback-url`,
+            options: {
+                sameSite: 'lax',
+                path: '/',
+                secure: true
+            }
+        },
+        csrfToken: {
+            name: `next-auth.csrf-token`,
+            options: {
+                httpOnly: true,
+                sameSite: 'lax',
+                path: '/',
+                secure: true
+            }
+        },
     }
 }
