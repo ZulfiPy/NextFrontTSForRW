@@ -1,0 +1,12 @@
+services:
+  app:
+    build:
+      context: .
+      target: dev
+    image: rw_next:dev
+    volumes:
+    - ./:/app
+    - /app/node_modules
+    ports:
+    - 3000:3000
+    command: npm run dev
