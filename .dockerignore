@@ -16,3 +16,4 @@ LICENSE
 .next
 *.swp
 /scripts
+.env
