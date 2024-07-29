@@ -1,17 +1,4 @@
-import { RegisterUserData, Task, Customer, AddCustomerDataType, Vehicle, AddVehicleDataType, VehicleResponseData, TaskRequestBodyType } from "./types";
-
-async function registerUserRequest(userData: RegisterUserData): Promise<Response> {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_DOMAIN}/register`, {
-        method: 'POST',
-        credentials: "include",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(userData)
-    })
-
-    return response;
-};
+import { Task, Customer, AddCustomerDataType, Vehicle, AddVehicleDataType, VehicleResponseData, TaskRequestBodyType } from "./types";
 
 interface SignInResponse {
     data: { jwt?: string, error?: unknown },
@@ -294,7 +281,6 @@ async function updateVehicle(vehicleData: AddVehicleDataType, id: string): Promi
 }
 
 export {
-    registerUserRequest,
     signInUserRequest,
     signOutUserRequest,
     getOneTask,
