@@ -24,6 +24,17 @@ export type RegisterUserData = {
     password: string
 }
 
+export type NewUserDBType = {
+    id: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    personal_id_code: string;
+    birth_date: Date;
+    username: string;
+    password: string;
+}
+
 export type NewCustomerUserData = {
     firstName: string,
     lastName: string,
