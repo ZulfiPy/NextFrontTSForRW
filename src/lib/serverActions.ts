@@ -3,7 +3,7 @@ import { NewUserDBType } from "./types";
 import { db } from "./db";
 import { usersTable } from "./db";
 
-async function signUp(formData: NewUserDBType) {
+async function signUp(formData: NewUserDBType): Promise<{ newUser?: NewUserDBType; error?: string | any }> {
     try {
         const newUser = await db.insert(usersTable).values(formData).returning();
 
