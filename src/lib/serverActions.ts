@@ -2,6 +2,10 @@
 import { NewUserDBType } from "./types";
 import { db } from "./db";
 import { usersTable } from "./db";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcryptjs";
+import { cookies } from "next/headers";
+import { lucia } from "./auth";
 
 async function signUp(formData: NewUserDBType): Promise<{ newUser?: NewUserDBType; error?: string | any }> {
     try {
@@ -16,6 +20,31 @@ async function signUp(formData: NewUserDBType): Promise<{ newUser?: NewUserDBTyp
     }
 }
 
+
+async function login(username: string, password: string): Promise<{ response?: string; error?: string | any }> {
+    try {
+        const existingUser = await db.select().from(usersTable).where(eq(usersTable.username, username));
+
+        if (existingUser[0]) {
+            const hashedPassword = existingUser[0].password;
+            const comparedPassword = await bcrypt.compare(password, hashedPassword);
+            if (!comparedPassword) return { error: 'Invalid password' }
+
+            const session = await lucia.createSession(existingUser[0].id, {});
+            const sessionCookie = lucia.createSessionCookie(session.id);
+            cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+            return { response: 'Successfully logged in!' }
+        }
+
+        return { error: "User doesn't exist" }
+
+    } catch (error) {
+        console.log('error occured while logging in', error);
+        return { error }
+    }
+}
+
 export {
     signUp,
+    login,
 }
