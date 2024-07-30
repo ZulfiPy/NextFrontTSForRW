@@ -4,9 +4,9 @@ import { cookies } from "next/headers";
 
 export async function middleware(request: NextRequest) {
     const cookieStore = cookies();
-    const sessionToken = cookieStore.get('next-auth.session-token')?.value;
+    const authSession = cookieStore.get('auth_session')?.value;
 
-    if (!sessionToken) {
+    if (!authSession) {
         return NextResponse.redirect(new URL('/sign-in', request.url));
     }
 }
