@@ -1,15 +1,14 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "./api/auth/[...nextauth]/optionsForServerSide";
 import Link from "next/link";
+import { validateRequest } from "@/lib/auth";
 
 export default async function Home() {
-  const session = await getServerSession(authOptions);
+  const { session, user } = await validateRequest();
 
   return (
     <section className="container flex flex-col items-center justify-center min-h-screen">
-      {session?.user ? (
+      {session ? (
         <>
-          <p>Welcome, <span className="font-bold underline">{session?.user.username}</span>!</p>
+          <p>Welcome, <span className="font-bold underline">{user?.username}</span>!</p>
           <Link href='components'
             className="font-bold bg-blue-700 p-2 rounded-lg mt-2 hover:underline"
           >
