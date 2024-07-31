@@ -18,15 +18,28 @@ import { Button } from "./ui/button";
 import { Moon, Sun, Settings, CircleUserRound, GitGraph, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 
 import Link from "next/link";
 
+import { validateLuciaAuthRequest } from "@/lib/serverActions";
+import { useEffect, useState } from "react";
+
 const MainNav = () => {
-    const { data: session, status } = useSession();
     const { setTheme } = useTheme();
     const router = useRouter();
+    const [authUser, setAuthUser] = useState({ username: '', id: '' });
+
+    useEffect(() => {
+        async function getAuthUserData() {
+            const { user } = await validateLuciaAuthRequest();
+
+            user && setAuthUser(user);
+        }
+
+        getAuthUserData()
+
+    }, []);
 
     return (
         <>
@@ -73,7 +86,7 @@ const MainNav = () => {
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
 
-                                {status === 'authenticated' && session?.user ?
+                                {authUser?.username ?
                                     (
                                         <div className="flex flex-col">
                                             <DropdownMenuItem className="flex flex-col space-y-2">
@@ -81,7 +94,7 @@ const MainNav = () => {
                                                     <DropdownMenuTrigger asChild>
                                                         <Button
                                                             className="text-md font-bold md:p-5 text-md w-24">
-                                                            {session.user.username}
+                                                            {authUser.username}
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="start">
@@ -174,13 +187,13 @@ const MainNav = () => {
                             </div>
 
                             <div className="flex flex-col items-center space-y-3 md:space-y-0 md:space-x-2 md:flex-row md:order-3 ">
-                                {status === 'authenticated' && session?.user ? (
+                                {authUser?.username ? (
                                     <>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     className="text-md font-bold md:p-5 md:text-lg">
-                                                    {session.user.username}
+                                                    {authUser.username}
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="start">
