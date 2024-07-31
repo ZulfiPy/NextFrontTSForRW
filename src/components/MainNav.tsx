@@ -28,7 +28,7 @@ import { useEffect, useState } from "react";
 const MainNav = () => {
     const { setTheme } = useTheme();
     const router = useRouter();
-    const [authUser, setAuthUser] = useState({ username: '', id: '' });
+    const [authUser, setAuthUser] = useState<{username: string, id: string}>({ username: '', id: '' });
 
     useEffect(() => {
         async function getAuthUserData() {
