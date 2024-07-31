@@ -6,6 +6,8 @@ import { eq } from "drizzle-orm";
 import bcrypt from "bcryptjs";
 import { cookies } from "next/headers";
 import { lucia } from "./auth";
+import { validateRequest } from "./auth";
+import { User, Session } from "lucia";
 
 async function signUp(formData: NewUserDBType): Promise<{ newUser?: NewUserDBType; error?: string | any }> {
     try {
@@ -44,7 +46,19 @@ async function login(username: string, password: string): Promise<{ response?: s
     }
 }
 
+async function validateLuciaAuthRequest(): Promise<{ user?: User | null; session?: Session | null; error?: string | any }> {
+    try {
+        const { user, session } = await validateRequest();
+
+        return { user, session }
+    } catch (error) {
+        console.log('error occurred while validating request', error)
+        return { error }
+    }
+}
+
 export {
     signUp,
     login,
+    validateLuciaAuthRequest
 }
