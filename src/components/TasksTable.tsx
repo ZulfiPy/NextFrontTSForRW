@@ -27,15 +27,15 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import { useSession } from "next-auth/react";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
+import { validateLuciaAuthRequest } from "@/lib/serverActions";
 
 const TasksTable = () => {
-    const { data: session } = useSession();
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
+    const [authUser, setAuthUser] = useState<{ username: string, id: string }>({ username: '', id: '' });
     const router = useRouter();
     const BACKEND_API_DOMAIN = process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN
 
@@ -69,11 +69,18 @@ const TasksTable = () => {
             }
         }
 
+        async function getAuthUserData() {
+            const { user } = await validateLuciaAuthRequest();
+
+            user && setAuthUser(user);
+        }
+
         getTasks();
+        getAuthUserData();
     }, [BACKEND_API_DOMAIN, loading]);
 
     async function handleTaskDeletion(id: string) {
-        const username = session?.user.username as string;
+        const username = authUser.username as string;
         const response = await deleteTask(id, username);
 
         if (response.status === 200) {
