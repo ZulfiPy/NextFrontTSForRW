@@ -1,19 +1,3 @@
-import { DefaultSession } from "next-auth";
-
-declare module "next-auth" {
-    interface User {
-        id?: string;
-        firstName?: string,
-        lastName?: string,
-        username?: string;
-        roles?: string;
-    }
-
-    interface Session {
-        user: User & DefaultSession["user"]
-    }
-}
-
 export type RegisterUserData = {
     firstName: string,
     lastName: string,
@@ -22,6 +6,17 @@ export type RegisterUserData = {
     birthDate: string,
     username: string,
     password: string
+}
+
+export type NewUserDBType = {
+    id: string;
+    firstname: string;
+    lastname: string;
+    email: string;
+    personal_id_code: string;
+    birth_date: Date;
+    username: string;
+    password: string;
 }
 
 export type NewCustomerUserData = {

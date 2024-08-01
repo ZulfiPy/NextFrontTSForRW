@@ -18,15 +18,34 @@ import { Button } from "./ui/button";
 import { Moon, Sun, Settings, CircleUserRound, GitGraph, Menu } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { signOut } from "next-auth/react";
-
+import { logout } from "@/lib/serverActions";
 import Link from "next/link";
 
+import { validateLuciaAuthRequest } from "@/lib/serverActions";
+import { useEffect } from "react";
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
+
 const MainNav = () => {
-    const { data: session, status } = useSession();
     const { setTheme } = useTheme();
     const router = useRouter();
+    const { auth, setAuth } = useContext(AuthContext);
+
+    useEffect(() => {
+        async function getAuthUserData() {
+            const { user } = await validateLuciaAuthRequest();
+
+            user && setAuth(user);
+        }
+
+        getAuthUserData()
+    }, []);
+
+    async function runLogout() {
+        const { response } = await logout();
+
+        if (response) return setAuth({ username: '', id: '' });
+    }
 
     return (
         <>
@@ -73,7 +92,7 @@ const MainNav = () => {
                                 </DropdownMenuItem>
                                 <DropdownMenuSeparator />
 
-                                {status === 'authenticated' && session?.user ?
+                                {auth?.username ?
                                     (
                                         <div className="flex flex-col">
                                             <DropdownMenuItem className="flex flex-col space-y-2">
@@ -81,7 +100,7 @@ const MainNav = () => {
                                                     <DropdownMenuTrigger asChild>
                                                         <Button
                                                             className="text-md font-bold md:p-5 text-md w-24">
-                                                            {session.user.username}
+                                                            {auth.username}
                                                         </Button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent align="start">
@@ -102,7 +121,7 @@ const MainNav = () => {
 
                                                 <Button
                                                     className="ext-md font-bold md:p-5 text-md w-24"
-                                                    onClick={() => signOut()}>
+                                                    onClick={() => runLogout()}>
                                                     Sign out
                                                 </Button>
                                             </DropdownMenuItem>
@@ -174,13 +193,13 @@ const MainNav = () => {
                             </div>
 
                             <div className="flex flex-col items-center space-y-3 md:space-y-0 md:space-x-2 md:flex-row md:order-3 ">
-                                {status === 'authenticated' && session?.user ? (
+                                {auth?.username ? (
                                     <>
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
                                                 <Button
                                                     className="text-md font-bold md:p-5 md:text-lg">
-                                                    {session.user.username}
+                                                    {auth.username}
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="start">
@@ -201,7 +220,7 @@ const MainNav = () => {
 
                                         <Button
                                             className="text-md font-bold md:p-5 md:text-lg"
-                                            onClick={() => signOut()}>
+                                            onClick={() => runLogout()}>
                                             Sign out
                                         </Button>
                                     </>

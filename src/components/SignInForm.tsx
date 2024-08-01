@@ -21,19 +21,21 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { signIn } from "next-auth/react";
+import { login } from "@/lib/serverActions";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import "react-toastify/ReactToastify.css";
+
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
 
 import { loginSchema } from "@/validators/loginFormValidator";
 type loginInputType = z.infer<typeof loginSchema>
 
-interface DecodedPayload {
-    UserInfo: {
-        username: string,
-        roles: number[]
-    }
-}
-
 const SignInForm = () => {
+    const { setAuth } = useContext(AuthContext);
+    const [error, setError] = useState('');
     const form = useForm<loginInputType>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -41,9 +43,18 @@ const SignInForm = () => {
             password: ""
         }
     });
+    const router = useRouter();
 
     async function handleLoginForm(values: loginInputType) {
-        signIn("credentials", { username: values.username, password: values.password });
+        const { userData, error } = await login(values.username, values.password);
+
+        if (error) return setError(error);
+
+        toast.success('Successfully logged in!');
+        form.reset();
+        setError('');
+        userData && setAuth(userData)
+        return router.push('/');
     }
 
     return (
@@ -93,6 +104,8 @@ const SignInForm = () => {
                                     </FormItem>
                                 )}
                             />
+
+                            <p className="self-center text-red-700">{error}</p>
 
                             <Button type="submit" className="font-bold">Sign In</Button>
 

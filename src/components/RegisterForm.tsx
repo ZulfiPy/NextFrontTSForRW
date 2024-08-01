@@ -27,9 +27,9 @@ import { Input } from "@/components/ui/input";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
-import { RegisterUserData } from "@/lib/types";
-
-import { registerUserRequest } from "@/lib/backendRequests";
+import { NewUserDBType } from "@/lib/types";
+import { signUp } from "@/lib/serverActions";
+import { generateId } from "lucia";
 import { cn } from "@/lib/utils";
 
 import registerSchema from "@/validators/registerFormValidator";
@@ -55,12 +55,13 @@ const RegisterForm = () => {
         }
     });
 
-    const dataToRegisterUser: RegisterUserData = {
-        firstName: "",
-        lastName: "",
+    const dataToRegisterUser: NewUserDBType = {
+        id: "",
+        firstname: "",
+        lastname: "",
         email: "",
-        isikukood: "",
-        birthDate: "",
+        personal_id_code: "",
+        birth_date: new Date(),
         username: "",
         password: "",
     };
@@ -73,26 +74,24 @@ const RegisterForm = () => {
 
         const hashedPwd = await bcrypt.hash(values.password, 10);
 
-        const formattedDay = values.day.toString().length < 2 ? `0${values.day}` : values.day;
-        const formattedMonth = values.month.toString().length < 2 ? `0${values.month}` : values.month;
-        const formattedBirthDate = `${formattedDay}.${formattedMonth}.${values.year}`;
-
-        dataToRegisterUser.firstName = values.firstName;
-        dataToRegisterUser.lastName = values.lastName;
+        dataToRegisterUser.id = generateId(values.username.length)
+        dataToRegisterUser.firstname = values.firstName;
+        dataToRegisterUser.lastname = values.lastName;
         dataToRegisterUser.email = values.email;
-        dataToRegisterUser.isikukood = values.isikukood;
-        dataToRegisterUser.birthDate = formattedBirthDate;
+        dataToRegisterUser.personal_id_code = values.isikukood;
+        dataToRegisterUser.birth_date = new Date(Date.UTC(values.year, values.month - 1, values.day));
         dataToRegisterUser.username = values.username;
         dataToRegisterUser.password = hashedPwd;
 
-        // POST REQUEST TO THE EXPRESS BACKEND
-        const response = await registerUserRequest(dataToRegisterUser);
+        const { newUser, error } = await signUp(dataToRegisterUser)
 
-        if (response.status === 201) {
-            toast.success('You have been successfully registered!');
-            form.reset();
-            router.push('/sign-in');
+        if (newUser && !error) {
+            toast.success('You have been successfully registered!')
+            form.reset()
+            return router.push('/sign-in');
         }
+
+        toast.error('Something went wrong, please try again!');
     }
 
     async function proceedToNextStep() {
