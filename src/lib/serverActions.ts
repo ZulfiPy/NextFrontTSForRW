@@ -23,7 +23,7 @@ async function signUp(formData: NewUserDBType): Promise<{ newUser?: NewUserDBTyp
 }
 
 
-async function login(username: string, password: string): Promise<{ response?: string; error?: string | any }> {
+async function login(username: string, password: string): Promise<{ userData?: { username: string; id: string }; error?: string | any }> {
     try {
         const existingUser = await db.select().from(usersTable).where(eq(usersTable.username, username));
 
@@ -35,7 +35,7 @@ async function login(username: string, password: string): Promise<{ response?: s
             const session = await lucia.createSession(existingUser[0].id, {});
             const sessionCookie = lucia.createSessionCookie(session.id);
             cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
-            return { response: 'Successfully logged in!' }
+            return { userData: { username: existingUser[0].username, id: existingUser[0].id } }
         }
 
         return { error: "User doesn't exist" }
@@ -44,6 +44,28 @@ async function login(username: string, password: string): Promise<{ response?: s
         console.log('error occured while logging in', error);
         return { error }
     }
+}
+
+async function logout(): Promise<{ response?: string; error?: string }> {
+    const { session } = await validateRequest();
+
+    if (!session) {
+        return {
+            error: "Unauthorized"
+        };
+    }
+
+    await lucia.invalidateSession(session.id);
+    const sessionCookie = lucia.createBlankSessionCookie();
+    cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+
+    const authSessionCookie = cookies().get('auth_session')?.value;
+
+    if (!authSessionCookie) {
+        return { response: 'ok' };
+    }
+
+    return { response: '' }
 }
 
 async function validateLuciaAuthRequest(): Promise<{ user?: User | null; session?: Session | null; error?: string | any }> {
@@ -60,5 +82,6 @@ async function validateLuciaAuthRequest(): Promise<{ user?: User | null; session
 export {
     signUp,
     login,
-    validateLuciaAuthRequest
+    logout,
+    validateLuciaAuthRequest,
 }
