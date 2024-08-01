@@ -27,10 +27,14 @@ import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
 
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
+
 import { loginSchema } from "@/validators/loginFormValidator";
 type loginInputType = z.infer<typeof loginSchema>
 
 const SignInForm = () => {
+    const { setAuth } = useContext(AuthContext);
     const [error, setError] = useState('');
     const form = useForm<loginInputType>({
         resolver: zodResolver(loginSchema),
@@ -42,13 +46,14 @@ const SignInForm = () => {
     const router = useRouter();
 
     async function handleLoginForm(values: loginInputType) {
-        const { response, error } = await login(values.username, values.password);
+        const { userData, error } = await login(values.username, values.password);
 
         if (error) return setError(error);
 
-        toast.success(response);
+        toast.success('Successfully logged in!');
         form.reset();
         setError('');
+        userData && setAuth(userData)
         return router.push('/');
     }
 
