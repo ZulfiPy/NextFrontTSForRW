@@ -4,6 +4,7 @@ import "./globals.css";
 import MainNav from "@/components/MainNav";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ToastContainer } from "react-toastify";
+import { AuthProvider } from "@/context/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,11 +26,13 @@ export default function RootLayout({
           defaultTheme="system"
           enableSystem
           disableTransitionOnChange>
-            <MainNav />
-            <main>
-              {children}
-            </main>
-            <ToastContainer />
+          <AuthProvider>
+          <MainNav />
+          <main>
+            {children}
+          </main>
+          </AuthProvider>
+          <ToastContainer />
         </ThemeProvider>
       </body>
     </html>
