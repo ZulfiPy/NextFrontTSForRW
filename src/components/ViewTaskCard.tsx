@@ -24,7 +24,8 @@ import { useRouter } from "next/navigation";
 import { Task } from "@/lib/types";
 import { deleteTask } from "@/lib/backendRequests";
 import { convertTimestampWithUTC } from "@/lib/customUtils";
-import { useSession } from "next-auth/react";
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -34,11 +35,11 @@ type ViewTaskCardProps = {
 }
 
 const ViewTaskCard: React.FC<ViewTaskCardProps> = ({ task }) => {
-    const { data: session } = useSession();
+    const { auth } = useContext(AuthContext)
     const router = useRouter();
 
     async function handleTaskDeletion(id: string) {
-        const username = session?.user.username as string;
+        const username = auth.username as string;
         const response = await deleteTask(id, username);
 
         if (response.status === 200) {

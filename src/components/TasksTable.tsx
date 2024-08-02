@@ -30,14 +30,15 @@ import {
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
-import { validateLuciaAuthRequest } from "@/lib/serverActions";
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
 
 const TasksTable = () => {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
-    const [authUser, setAuthUser] = useState<{ username: string, id: string }>({ username: '', id: '' });
     const router = useRouter();
     const BACKEND_API_DOMAIN = process.env.NEXT_PUBLIC_BACKEND_API_DOMAIN
+    const { auth } = useContext(AuthContext);
 
     useEffect(() => {
         async function getTasks() {
@@ -69,18 +70,11 @@ const TasksTable = () => {
             }
         }
 
-        async function getAuthUserData() {
-            const { user } = await validateLuciaAuthRequest();
-
-            user && setAuthUser(user);
-        }
-
         getTasks();
-        getAuthUserData();
     }, [BACKEND_API_DOMAIN, loading]);
 
     async function handleTaskDeletion(id: string) {
-        const username = authUser.username as string;
+        const username = auth.username as string;
         const response = await deleteTask(id, username);
 
         if (response.status === 200) {

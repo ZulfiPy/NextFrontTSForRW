@@ -23,11 +23,12 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
-import { useSession } from "next-auth/react";
 
 import taskSchema from "@/validators/taskFormValidator";
 import { updateTask } from "@/lib/backendRequests";
 import { Task, TaskRequestBodyType } from "@/lib/types";
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
 
 import { toast } from "react-toastify";
 import "react-toastify/ReactToastify.css";
@@ -39,7 +40,7 @@ type EditTaskCardFormProps = {
 }
 
 const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task }) => {
-    const { data: session } = useSession();
+    const { auth } = useContext(AuthContext);
     const router = useRouter();
 
     const form = useForm<taskInputType>({
@@ -59,7 +60,7 @@ const EditTaskCardForm: React.FC<EditTaskCardFormProps> = ({ task }) => {
             description: values.description,
             priority: values.priority,
             status: values.status,
-            created_by: session?.user.username as string
+            created_by: auth.username as string
         }
         const response = await updateTask(task.id, dataToUpdateTask);
 

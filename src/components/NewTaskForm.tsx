@@ -21,9 +21,10 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useSession } from "next-auth/react";
 import { createTask } from "@/lib/backendRequests";
 import { TaskRequestBodyType } from "@/lib/types";
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
 
 import taskSchema from "@/validators/taskFormValidator";
 import { toast } from "react-toastify";
@@ -32,7 +33,7 @@ import "react-toastify/ReactToastify.css";
 type taskInputType = z.infer<typeof taskSchema>
 
 const NewTaskForm = () => {
-    const { data: session } = useSession();
+    const { auth } = useContext(AuthContext);
     const router = useRouter();
     const form = useForm<taskInputType>({
         resolver: zodResolver(taskSchema),
@@ -50,7 +51,7 @@ const NewTaskForm = () => {
             description: values.description,
             priority: values.priority,
             status: values.status,
-            created_by: session?.user.username as string
+            created_by: auth.username as string
         }
 
         const createTaskResponse = await createTask(dataToCreateTask)
