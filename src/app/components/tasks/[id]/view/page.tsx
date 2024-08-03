@@ -3,23 +3,24 @@ import { useState, useEffect } from "react";
 import Spinner from "@/components/Spinner";
 import ViewTaskCard from "@/components/ViewTaskCard";
 import { getOneTask } from "@/lib/backendRequests";
-import { useSession } from "next-auth/react";
 import { Task } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { AuthContext } from "@/context/AuthContext";
+import { useContext } from "react";
 
 const ViewOneTaskPage = ({ params }: { params: { id: string } }) => {
     const { id } = params;
     const [task, setTask] = useState<Task>();
     const [loading, setLoading] = useState<boolean>(true);
-    const { data: session } = useSession();
+    const {auth} = useContext(AuthContext)
     const router = useRouter();
 
     useEffect(() => {
 
         async function fetchOneTask() {
-            if (session?.user) {
-                const username = session.user.username as string
+            if (auth.username) {
+                const username = auth.username as string
                 const response = await getOneTask(id, username);
 
                 if (response.status === 200 && response.data) {
@@ -32,7 +33,7 @@ const ViewOneTaskPage = ({ params }: { params: { id: string } }) => {
 
         fetchOneTask();
 
-    }, [id, session])
+    }, [id, auth])
 
     return (
         <section className="container flex flex-col items-center justify-center min-h-screen">
