@@ -7,7 +7,7 @@ import type { DatabaseUser } from "@/lib/db";
 import type { Session, User } from "lucia";
 
 export const lucia = new Lucia(adapter, {
-    sessionExpiresIn: new TimeSpan(60, "m"),
+    sessionExpiresIn: new TimeSpan(4, "h"),
     sessionCookie: {
         expires: true,
         attributes: {
